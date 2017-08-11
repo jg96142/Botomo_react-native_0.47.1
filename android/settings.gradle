@@ -1,0 +1,3 @@
+rootProject.name = 'Botomo'
+
+include ':app'
