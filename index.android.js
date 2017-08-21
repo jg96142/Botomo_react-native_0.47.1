@@ -21,7 +21,7 @@ import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
 //import utf8 from 'utf8';
-var utf8 = require('utf8');
+//var utf8 = require('utf8');
 //var React = require('react-native');
 //var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
