@@ -20,6 +20,8 @@ import {
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
+//import utf8 from 'utf8';
+//var utf8 = require('utf8');
 //var React = require('react-native');
 //var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
@@ -165,18 +167,14 @@ export default class Botomo extends React.Component {
               {text: '太冷了', onPress: () => console.log('Baz Pressed!')},
             ]
       );
-
-      this.onReceive(JSON.parse(responseData).cut);
-      this.onReceive("e04");
+      var cut = JSON.parse(responseData);
+      this.onReceive(responseData);
+      this.onReceive(cut.intent);
+      this.onReceive(cut.request);
       this.onReceive((text)=>{
 
-        <View>
-      <TouchableOpacity style={styles.button} onPress={this._onPressButton}>
-          <Text style={styles.buttonText}> hhhh </Text>
-      </TouchableOpacity>
-        </View>
-  
-      });//跑不出來啊
+       
+      });
       this.setState((previousState) => {
           return {
            typingText: null,

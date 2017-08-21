@@ -25,6 +25,12 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage()
       );
     }
+    // @Override
+    // protected List<ReactPackage> getPackages() {
+    //   return Arrays.<ReactPackage>asList(
+    //     new SQLitePluginPackage(),   // register SQLite Plugin here
+    //     new MainReactPackage());
+    // }
   };
 
   @Override
