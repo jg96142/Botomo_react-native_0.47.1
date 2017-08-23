@@ -170,6 +170,7 @@ export default class Botomo extends React.Component {
       var cut = JSON.parse(responseData);
       this.onReceive(responseData);
       this.onReceive(cut.intent);
+      this.onReceive(cut.cut);
       this.onReceive(cut.request);
       this.onReceive((text)=>{
 
