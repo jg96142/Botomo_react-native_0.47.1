@@ -20,13 +20,12 @@ import {
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
-//import utf8 from 'utf8';
-//var utf8 = require('utf8');
+
 //var React = require('react-native');
-//var SQLite = require('react-native-sqlite-storage');
+var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
 //SQLite.openDatabase({name : "Botomo.db", createFromLocation : 1}," okCallback","errorCallback");
-//SQLite.openDatabase("Botomo.db", "1.0", "userdata", -1);
+SQLite.openDatabase("botomo.db", "1.0", "Demo", -1);
 export default class Botomo extends React.Component {
 
   constructor(props) {
@@ -172,10 +171,7 @@ export default class Botomo extends React.Component {
       this.onReceive(cut.intent);
       this.onReceive(cut.cut);
       this.onReceive(cut.request);
-      this.onReceive((text)=>{
-
-       
-      });
+      this.onReceive(SQLite.);
       this.setState((previousState) => {
           return {
            typingText: null,
