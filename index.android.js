@@ -20,14 +20,55 @@ import {
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
-
+import SQLite from 'react-native-sqlite-storage';
 //var React = require('react-native');
-var SQLite = require('react-native-sqlite-storage');
+//var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
 //SQLite.openDatabase({name : "Botomo.db", createFromLocation : 1}," okCallback","errorCallback");
-SQLite.openDatabase("botomo.db", "1.0", "Demo", -1);
-export default class Botomo extends React.Component {
+//SQLite.openDatabase("botomo.db", "1.0", "Demo", -1);
+SQLite.DEBUG(true);
+SQLite.enablePromise(true);
+// const database_name = "botomo.db";
+// const database_version = "1.0";
+// const database_displayname = "SQLite Test Database";
+// const database_size = 200000;
+// let db;
 
+export default class Botomo extends React.Component {
+errorCB(err) {
+  console.log("SQL Error: " + err);
+}
+
+successCB() {
+  console.log("SQL executed fine");
+}
+
+openCB() {
+  console.log("Database OPENED");
+}
+
+populateDatabase(db){
+ var db = SQLite.openDatabase({name : "botomo.db", createFromLocation : "/botomo.db"}, this.openCB(), this.errorCB());
+ //SQLite.openDatabase("dfg.db", "1.0", "Test Database", 200000, this.openCB(), this.errorCB());
+  db.transaction((tx) => {
+    tx.executeSql('SELECT * FROM records', [], function() {
+                      console.log("dddddddddddddd");
+                  },
+                  function() {
+                      console.log("ssssssssss");
+                  });
+  });
+}
+// loadAndQueryDB(){
+//  SQLite.openDatabase({name : "botomo.db", createFromLocation : "~/botomo.db"}).then((DB) => {
+//                 db = DB;
+//                 this.populateDatabase(DB);
+//             }).catch((error) => {
+//                 console.log(error);
+//             });
+//   }
+ 
+ 
   constructor(props) {
     super(props);
     this.state = {
@@ -161,17 +202,18 @@ export default class Botomo extends React.Component {
             '你覺得這樣的天氣如何',
             null,
             [
-              {text: '太熱了', onPress: () => console.log('Foo Pressed!')},
-              {text: '滿舒服的', onPress: () => console.log('Bar Pressed!')},
-              {text: '太冷了', onPress: () => console.log('Baz Pressed!')},
+              {text: '太熱了', onPress: () => console.log('Too Hot Pressed!')},
+              {text: '滿舒服的', onPress: () => console.log('Comfortable Pressed!')},
+              {text: '太冷了', onPress: () => console.log('Too Cold Pressed!')},
             ]
       );
       var cut = JSON.parse(responseData);
+      
       this.onReceive(responseData);
       this.onReceive(cut.intent);
       this.onReceive(cut.cut);
       this.onReceive(cut.request);
-      this.onReceive(SQLite.);
+      this.populateDatabase();
       this.setState((previousState) => {
           return {
            typingText: null,
@@ -186,6 +228,13 @@ export default class Botomo extends React.Component {
     })*/
     .done();
   }
+
+
+
+  
+
+
+
 
   renderBubble(props) {
     return (
