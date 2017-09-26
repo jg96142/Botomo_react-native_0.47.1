@@ -48,7 +48,7 @@ openCB() {
 }
 
 populateDatabase(db){
- var db = SQLite.openDatabase({name : "botomo.db", createFromLocation : "/botomo.db"}, this.openCB(), this.errorCB());
+ var db = SQLite.openDatabase({name : "botomo", createFromLocation : "/botomo"}, this.openCB(), this.errorCB());
  //SQLite.openDatabase("dfg.db", "1.0", "Test Database", 200000, this.openCB(), this.errorCB());
   db.transaction((tx) => {
     tx.executeSql('SELECT * FROM records', [], function() {
