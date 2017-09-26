@@ -213,10 +213,7 @@ populateDatabase(db){
       this.onReceive(cut.intent);
       this.onReceive(cut.cut);
       this.onReceive(cut.request);
-<<<<<<< HEAD
-=======
       this.populateDatabase();
->>>>>>> 014e6a6c48743c13c5ef5d78f0ec6a03d7f9aa4b
       this.setState((previousState) => {
           return {
            typingText: null,
