@@ -101,7 +101,9 @@ populateDatabase(db,tx){
     this._isAlright = null;
   }
   getModel() {
-    console.log(RNDeviceInfo.model);
+    //console.log(RNDeviceInfo.model);
+    //return RNDeviceInfo.model;
+    return RNDeviceInfo.uniqueId;
   }
   state = {
     initialPosition: 'unknown',
@@ -252,6 +254,7 @@ populateDatabase(db,tx){
       this.onReceive(responseData);
       this.onReceive(cut.intent);
       this.onReceive(cut.request);
+      this.onReceive(this.getModel());
       this.getModel()
       //this.populateDatabase();
       this.setState((previousState) => {
