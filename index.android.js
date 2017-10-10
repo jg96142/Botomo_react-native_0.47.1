@@ -255,6 +255,7 @@ populateDatabase(db,tx){
       this.onReceive(cut.intent);
       this.onReceive(cut.request);
       this.onReceive(this.state.lastPosition);
+      this.onReceive(this.getModel());
        //this.onReceive(this.componentDidMount());
       //this.populateDatabase();
       this.setState((previousState) => {
