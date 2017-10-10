@@ -24,6 +24,7 @@ import CustomView from './CustomView';
 import Moment from 'moment';
 import SQLite from 'react-native-sqlite-storage';
 import DeviceInfo from 'react-native-device-info';
+var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 //var React = require('react-native');
 //var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
@@ -99,7 +100,9 @@ populateDatabase(db,tx){
     //this.Buttonnn = this.Buttonnn.bind(this);
     this._isAlright = null;
   }
-
+  getModel() {
+    console.log(RNDeviceInfo.model);
+  }
   state = {
     initialPosition: 'unknown',
     lastPosition: 'unknown',
@@ -122,6 +125,7 @@ populateDatabase(db,tx){
       var lastPosition = JSON.stringify(position);
       this.setState({lastPosition});
       console.log(lastPosition);
+
     });
   }
    componentWillUnmount() {
@@ -245,11 +249,10 @@ populateDatabase(db,tx){
             ]
       );
       var cut = JSON.parse(responseData);
-
       this.onReceive(responseData);
       this.onReceive(cut.intent);
       this.onReceive(cut.request);
-      //this.onReceive(position);
+      this.getModel()
       //this.populateDatabase();
       this.setState((previousState) => {
           return {
