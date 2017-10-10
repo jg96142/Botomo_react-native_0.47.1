@@ -117,8 +117,6 @@ populateDatabase(db,tx){
       (position) => {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
-        //console.log(initialPosition);
-
       },
       (error) => alert(JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
@@ -127,7 +125,7 @@ populateDatabase(db,tx){
       var lastPosition = JSON.stringify(position);
       this.setState({lastPosition});
       console.log(lastPosition);
-
+      //return position;
     });
   }
    componentWillUnmount() {
@@ -251,11 +249,13 @@ populateDatabase(db,tx){
             ]
       );
       var cut = JSON.parse(responseData);
+      
+
       this.onReceive(responseData);
       this.onReceive(cut.intent);
       this.onReceive(cut.request);
-      this.onReceive(this.getModel());
-      this.getModel()
+      this.onReceive(this.state.lastPosition);
+       //this.onReceive(this.componentDidMount());
       //this.populateDatabase();
       this.setState((previousState) => {
           return {
