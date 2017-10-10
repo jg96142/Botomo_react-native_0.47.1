@@ -10,6 +10,7 @@ import {
   Alert,
   Image,
   AsyncStorage,
+  PermissionsAndroid
 } from 'react-native';
 import {
   GiftedChat,
@@ -22,6 +23,7 @@ import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
 import SQLite from 'react-native-sqlite-storage';
+import DeviceInfo from 'react-native-device-info';
 //var React = require('react-native');
 //var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
@@ -98,30 +100,33 @@ populateDatabase(db,tx){
     this._isAlright = null;
   }
 
-  // state = {
-  //   initialPosition: 'unknown',
-  //   lastPosition: 'unknown',
-  // };
+  state = {
+    initialPosition: 'unknown',
+    lastPosition: 'unknown',
+  };
 
-  // watchID: ?number = null;
+  watchID: ?number = null;
 
-  // componentDidMount() {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       var initialPosition = JSON.stringify(position);
-  //       this.setState({initialPosition});
-  //     },
-  //     (error) => alert(JSON.stringify(error)),
-  //     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-  //   );
-  //   this.watchID = navigator.geolocation.watchPosition((position) => {
-  //     var lastPosition = JSON.stringify(position);
-  //     this.setState({lastPosition});
-  //   });
-  // }
-  //  componentWillUnmount() {
-  //   navigator.geolocation.clearWatch(this.watchID);
-  // }
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+        //console.log(initialPosition);
+
+      },
+      (error) => alert(JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      var lastPosition = JSON.stringify(position);
+      this.setState({lastPosition});
+      console.log(lastPosition);
+    });
+  }
+   componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
 
   componentWillMount() {
     this._isMounted = true;
@@ -240,11 +245,11 @@ populateDatabase(db,tx){
             ]
       );
       var cut = JSON.parse(responseData);
-      
+
       this.onReceive(responseData);
       this.onReceive(cut.intent);
       this.onReceive(cut.request);
-      //this.onReceive(this.state.lastPosition);
+      //this.onReceive(position);
       //this.populateDatabase();
       this.setState((previousState) => {
           return {
