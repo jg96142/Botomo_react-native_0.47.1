@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  AsyncStorage,
+  PermissionsAndroid
 } from 'react-native';
 import {
   GiftedChat,
@@ -21,6 +23,8 @@ import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
 import SQLite from 'react-native-sqlite-storage';
+import DeviceInfo from 'react-native-device-info';
+var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 //var React = require('react-native');
 //var SQLite = require('react-native-sqlite-storage');
 // SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
@@ -47,17 +51,24 @@ openCB() {
   console.log("Database OPENED");
 }
 
-populateDatabase(db){
- var db = SQLite.openDatabase({name : "botomo", createFromLocation : "/botomo"}, this.openCB(), this.errorCB());
+populateDatabase(db,tx){
+// var db = SQLite.openDatabase({name : "botomo.db", createFromLocation : "/botomo.db"}, this.openCB(), this.errorCB());
  //SQLite.openDatabase("dfg.db", "1.0", "Test Database", 200000, this.openCB(), this.errorCB());
-  db.transaction((tx) => {
-    tx.executeSql('SELECT * FROM records', [], function() {
-                      console.log("dddddddddddddd");
-                  },
-                  function() {
-                      console.log("ssssssssss");
-                  });
-  });
+  // db.transaction((tx) => {
+  //   tx.executeSql('SELECT * FROM records', [], function() {
+  //                     console.log("dddddddddddddd");
+  //                 },
+  //                 function() {
+  //                     console.log("ssssssssss");
+  //                 });
+  // });
+ // db.transaction(function(tx) {
+                    // tx.executeSql("select * from records;", [], function() {
+                    //     console.log("dddddddddddddd");
+                    //     console.log("ssssssssss");
+                    // });
+               // });
+
 }
 // loadAndQueryDB(){
 //  SQLite.openDatabase({name : "botomo.db", createFromLocation : "~/botomo.db"}).then((DB) => {
@@ -86,8 +97,39 @@ populateDatabase(db){
     this.renderMessageText = this.renderMessageText.bind(this);
     this.renderMessage = this.renderMessage.bind(this);
     this.onLoadEarlier = this.onLoadEarlier.bind(this);
-    this.Buttonnn = this.Buttonnn.bind(this);
+    //this.Buttonnn = this.Buttonnn.bind(this);
     this._isAlright = null;
+  }
+  getModel() {
+    //console.log(RNDeviceInfo.model);
+    //return RNDeviceInfo.model;
+    return RNDeviceInfo.uniqueId;
+  }
+  state = {
+    initialPosition: 'unknown',
+    lastPosition: 'unknown',
+  };
+
+  watchID: ?number = null;
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+      },
+      (error) => alert(JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      var lastPosition = JSON.stringify(position);
+      this.setState({lastPosition});
+      console.log(lastPosition);
+      //return position;
+    });
+  }
+   componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
   }
 
   componentWillMount() {
@@ -98,8 +140,7 @@ populateDatabase(db){
       };
     });
   }
-  componentDidMount() {
-  }
+
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -177,15 +218,15 @@ populateDatabase(db){
       />
     );
   }
-  Buttonnn(){
-    return(
-        <View>
-      <TouchableOpacity style={styles.button} onPress={this._onPressButton}>
-          <Text style={styles.buttonText}> hhhh </Text>
-      </TouchableOpacity>
-        </View>
-    )
-  }
+  // Buttonnn(){
+  //   return(
+  //       <View>
+  //     <TouchableOpacity style={styles.button} onPress={this._onPressButton}>
+  //         <Text style={styles.buttonText}> hhhh </Text>
+  //     </TouchableOpacity>
+  //       </View>
+  //   )
+  // }
   getEvent(message) {
     fetch("http://botomo.kyotw.me:20201/bot_response/", {
       method: "POST",
@@ -209,11 +250,14 @@ populateDatabase(db){
       );
       var cut = JSON.parse(responseData);
       
+
       this.onReceive(responseData);
       this.onReceive(cut.intent);
-      this.onReceive(cut.cut);
       this.onReceive(cut.request);
-      this.populateDatabase();
+      this.onReceive(this.state.lastPosition);
+      this.onReceive(this.getModel());
+       //this.onReceive(this.componentDidMount());
+      //this.populateDatabase();
       this.setState((previousState) => {
           return {
            typingText: null,
