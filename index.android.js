@@ -28,36 +28,42 @@ import SQLite from 'react-native-sqlite-storage';
 //SQLite.openDatabase("botomo.db", "1.0", "Demo", -1);
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
-// const database_name = "botomo.db";
-// const database_version = "1.0";
-// const database_displayname = "SQLite Test Database";
-// const database_size = 200000;
-// let db;
+const database_name = "botomo";
+const database_version = "1.0";
+const database_displayname = "botomo SQLite";
+const database_size = 200000;
+let db;
 
 export default class Botomo extends React.Component {
 errorCB(err) {
-  console.log("SQL Error: " + err);
+  console.log("---SQL Error: " + err);
 }
 
 successCB() {
-  console.log("SQL executed fine");
+  console.log("---SQL executed fine");
 }
 
 openCB() {
-  console.log("Database OPENED");
+  console.log("---Database OPENED");
 }
 
-populateDatabase(db){
- var db = SQLite.openDatabase({name : "botomo", createFromLocation : "/botomo"}, this.openCB(), this.errorCB());
+runDatabase(){
+  db = SQLite.openDatabase({name : "botomo", createFromLocation : 1}, this.openCB(), this.errorCB());
  //SQLite.openDatabase("dfg.db", "1.0", "Test Database", 200000, this.openCB(), this.errorCB());
-  db.transaction((tx) => {
-    tx.executeSql('SELECT * FROM records', [], function() {
-                      console.log("dddddddddddddd");
-                  },
-                  function() {
-                      console.log("ssssssssss");
-                  });
-  });
+  this.populateDB(db);
+  // db.transaction((tx) => {
+  //   tx.executeSql('SELECT * FROM records', [], function() {
+  //                     console.log("dddddddddddddd");
+  //                 },
+  //                 function() {
+  //                     console.log("ssssssssss");
+  //                 });
+  // });
+}
+populateDB(db){
+  //tx.executeSql('');
+  db.executeSql('SELECT * FROM records', [], function () {console.log("!!SUCCESS!!"); }, function (error) {console.log("received version error:", error); } );
+  console.log("--After select--");
 }
 // loadAndQueryDB(){
 //  SQLite.openDatabase({name : "botomo.db", createFromLocation : "~/botomo.db"}).then((DB) => {
@@ -213,7 +219,7 @@ populateDatabase(db){
       this.onReceive(cut.intent);
       this.onReceive(cut.cut);
       this.onReceive(cut.request);
-      this.populateDatabase();
+      this.runDatabase();
       this.setState((previousState) => {
           return {
            typingText: null,
