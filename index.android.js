@@ -32,28 +32,30 @@ var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 //SQLite.openDatabase("botomo.db", "1.0", "Demo", -1);
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
-// const database_name = "botomo.db";
-// const database_version = "1.0";
-// const database_displayname = "SQLite Test Database";
-// const database_size = 200000;
-// let db;
+const database_name = "botomo";
+const database_version = "1.0";
+const database_displayname = "botomo SQLite";
+const database_size = 200000;
+let db;
 
 export default class Botomo extends React.Component {
 errorCB(err) {
-  console.log("SQL Error: " + err);
+  console.log("---SQL Error: " + err);
 }
 
 successCB() {
-  console.log("SQL executed fine");
+  console.log("---SQL executed fine");
 }
 
 openCB() {
-  console.log("Database OPENED");
+  console.log("---Database OPENED");
 }
 
-populateDatabase(db,tx){
-// var db = SQLite.openDatabase({name : "botomo.db", createFromLocation : "/botomo.db"}, this.openCB(), this.errorCB());
+runDatabase(){
+  db = SQLite.openDatabase({name : "botomo", createFromLocation : 1}, this.openCB(), this.errorCB());
  //SQLite.openDatabase("dfg.db", "1.0", "Test Database", 200000, this.openCB(), this.errorCB());
+  this.populateDB(db);
+
   // db.transaction((tx) => {
   //   tx.executeSql('SELECT * FROM records', [], function() {
   //                     console.log("dddddddddddddd");
@@ -62,12 +64,12 @@ populateDatabase(db,tx){
   //                     console.log("ssssssssss");
   //                 });
   // });
- // db.transaction(function(tx) {
-                    // tx.executeSql("select * from records;", [], function() {
-                    //     console.log("dddddddddddddd");
-                    //     console.log("ssssssssss");
-                    // });
-               // });
+
+}
+populateDB(db){
+  //tx.executeSql('');
+  db.executeSql('SELECT * FROM records', [], function () {console.log("!!SUCCESS!!"); }, function (error) {console.log("received version error:", error); } );
+  console.log("--After select--");
 
 }
 // loadAndQueryDB(){
@@ -254,10 +256,13 @@ populateDatabase(db,tx){
       this.onReceive(responseData);
       this.onReceive(cut.intent);
       this.onReceive(cut.request);
+
+
       this.onReceive(this.state.lastPosition);
       this.onReceive(this.getModel());
        //this.onReceive(this.componentDidMount());
       //this.populateDatabase();
+
       this.setState((previousState) => {
           return {
            typingText: null,
