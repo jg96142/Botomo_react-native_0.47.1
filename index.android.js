@@ -257,9 +257,10 @@ populateDB(db){
       this.onReceive("Request="+cut.request);
       this.onReceive("Intent="+cut.intent);
       this.onReceive("Location="+cut.location);
-
-      this.onReceive(this.state.lastPosition);
-      this.onReceive(this.getModel());
+      this.onReceive("--DeviceInfo--");
+      this.onReceive("GeoLocation="+this.state.lastPosition);
+      this.onReceive("UniqueID="+this.getModel());
+      /*this.onReceive(this.getModel()); by kyo*/
        //this.onReceive(this.componentDidMount());
       //this.populateDatabase();
 
