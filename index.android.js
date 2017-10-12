@@ -254,9 +254,9 @@ populateDB(db){
       
 
       this.onReceive(responseData);
-      this.onReceive(cut.intent);
-      this.onReceive(cut.request);
-
+      this.onReceive("Request="+cut.request);
+      this.onReceive("Intent="+cut.intent);
+      this.onReceive("Location="+cut.location);
 
       this.onReceive(this.state.lastPosition);
       this.onReceive(this.getModel());
