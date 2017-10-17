@@ -22,71 +22,16 @@ import {
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import Moment from 'moment';
-import SQLite from 'react-native-sqlite-storage';
+//import SQLite from 'react-native-sqlite-storage';
 import DeviceInfo from 'react-native-device-info';
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
-//var React = require('react-native');
-//var SQLite = require('react-native-sqlite-storage');
-// SQLite.openDatabase({name : "Botomo", createFromLocation : 1}, successcb, errorcb);
-//SQLite.openDatabase({name : "Botomo.db", createFromLocation : 1}," okCallback","errorCallback");
-//SQLite.openDatabase("botomo.db", "1.0", "Demo", -1);
-SQLite.DEBUG(true);
-SQLite.enablePromise(true);
-const database_name = "botomo";
-const database_version = "1.0";
-const database_displayname = "botomo SQLite";
-const database_size = 200000;
-let db;
 
 export default class Botomo extends React.Component {
-errorCB(err) {
-  console.log("---SQL Error: " + err);
-}
-
-successCB() {
-  console.log("---SQL executed fine");
-}
-
-openCB() {
-  console.log("---Database OPENED");
-}
-
-runDatabase(){
-  db = SQLite.openDatabase({name : "botomo", createFromLocation : 1}, this.openCB(), this.errorCB());
- //SQLite.openDatabase("dfg.db", "1.0", "Test Database", 200000, this.openCB(), this.errorCB());
-  this.populateDB(db);
-
-  // db.transaction((tx) => {
-  //   tx.executeSql('SELECT * FROM records', [], function() {
-  //                     console.log("dddddddddddddd");
-  //                 },
-  //                 function() {
-  //                     console.log("ssssssssss");
-  //                 });
-  // });
-
-}
-populateDB(db){
-  //tx.executeSql('');
-  db.executeSql('SELECT * FROM records', [], function () {console.log("!!SUCCESS!!"); }, function (error) {console.log("received version error:", error); } );
-  console.log("--After select--");
-
-}
-// loadAndQueryDB(){
-//  SQLite.openDatabase({name : "botomo.db", createFromLocation : "~/botomo.db"}).then((DB) => {
-//                 db = DB;
-//                 this.populateDatabase(DB);
-//             }).catch((error) => {
-//                 console.log(error);
-//             });
-//   }
- 
- 
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
-      loadEarlier: true,
+      //loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
     };
@@ -98,13 +43,11 @@ populateDB(db){
     this.renderFooter = this.renderFooter.bind(this);
     this.renderMessageText = this.renderMessageText.bind(this);
     this.renderMessage = this.renderMessage.bind(this);
-    this.onLoadEarlier = this.onLoadEarlier.bind(this);
+    //this.onLoadEarlier = this.onLoadEarlier.bind(this);
     //this.Buttonnn = this.Buttonnn.bind(this);
     this._isAlright = null;
   }
-  getModel() {
-    //console.log(RNDeviceInfo.model);
-    //return RNDeviceInfo.model;
+  getUniqueID() {
     return RNDeviceInfo.uniqueId;
   }
   state = {
@@ -126,15 +69,10 @@ populateDB(db){
     this.watchID = navigator.geolocation.watchPosition((position) => {
       var lastPosition = JSON.stringify(position);
       this.setState({lastPosition});
-      console.log(lastPosition);
-      //return position;
     });
   }
-   componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
-  }
-
   componentWillMount() {
+    navigator.geolocation.clearWatch(this.watchID);
     this._isMounted = true;
     this.setState(() => {
       return {
@@ -146,13 +84,13 @@ populateDB(db){
   componentWillUnmount() {
     this._isMounted = false;
   }
-  onLoadEarlier() {
-    this.setState((previousState) => {
-      return {
-        isLoadingEarlier: true,
-      };
-    });
-  }
+  // onLoadEarlier() {
+  //   this.setState((previousState) => {
+  //     return {
+  //       isLoadingEarlier: true,
+  //     };
+  //   });
+  // }
 
   onSend(messages = []) {
     this.setState((previousState) => {
@@ -169,7 +107,7 @@ populateDB(db){
       if ((messages[0].image || messages[0].location) || !this._isAlright) {
         this.setState((previousState) => {
           return {
-            typingText: 'Botring is typing'
+            typingText: 'Botomo is typing'
           };
         });
       }
@@ -189,7 +127,7 @@ populateDB(db){
           user: {
             _id: 2,
             name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
+            avatar: 'http://www.freeiconspng.com/uploads/brown-white-cat-png-4.png',
           },         
         }),
       };
@@ -220,20 +158,14 @@ populateDB(db){
       />
     );
   }
-  // Buttonnn(){
-  //   return(
-  //       <View>
-  //     <TouchableOpacity style={styles.button} onPress={this._onPressButton}>
-  //         <Text style={styles.buttonText}> hhhh </Text>
-  //     </TouchableOpacity>
-  //       </View>
-  //   )
-  // }
   getEvent(message) {
+    var gpscut = JSON.parse(this.state.lastPosition);
     fetch("http://botomo.kyotw.me:20201/bot_response/", {
       method: "POST",
       body: JSON.stringify({
-        id: message
+        id: message,
+        longitude: gpscut.coords.longitude,
+        latitude: gpscut.coords.latitude
         //createdAt: new Date(),
       })
     })
@@ -252,16 +184,17 @@ populateDB(db){
       );
       var cut = JSON.parse(responseData);
       
-
       this.onReceive(responseData);
-      this.onReceive("Request="+cut.request);
-      this.onReceive("Intent="+cut.intent);
-      this.onReceive("Location="+cut.location);
+      this.onReceive("Request = "+cut.request);
+      this.onReceive("Intent = "+cut.intent);
+      this.onReceive("Location = "+cut.location);
       this.onReceive("--DeviceInfo--");
-      this.onReceive("GeoLocation="+this.state.lastPosition);
-      this.onReceive("UniqueID="+this.getModel());
+      this.onReceive("GeoLocation = "+this.state.lastPosition);
+      this.onReceive("longitude = "+gpscut.coords.longitude);
+      this.onReceive("latitude = "+gpscut.coords.latitude);
+      this.onReceive("UniqueID = "+this.getUniqueID());
+      this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?")
       /*this.onReceive(this.getModel()); by kyo*/
-       //this.onReceive(this.componentDidMount());
       //this.populateDatabase();
 
       this.setState((previousState) => {
@@ -278,12 +211,6 @@ populateDB(db){
     })*/
     .done();
   }
-
-
-
-  
-
-
 
 
   renderBubble(props) {
@@ -352,9 +279,9 @@ populateDB(db){
        <GiftedChat
         messages={this.state.messages}
         onSend={this.onSend}
-        loadEarlier={this.state.loadEarlier}
-        onLoadEarlier={this.onLoadEarlier}
-        isLoadingEarlier={this.state.isLoadingEarlier}
+       // loadEarlier={this.state.loadEarlier}
+        //onLoadEarlier={this.onLoadEarlier}
+        //isLoadingEarlier={this.state.isLoadingEarlier}
         onPressActionButton={this.onPressActionButton}
         user={{
           _id: 1, // sent messages should have same user._id
@@ -379,27 +306,12 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: 'red',
+    color: '#00bfff',
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  button: {
-    margin: 20,
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    backgroundColor: '#406E9F',
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 });
 
