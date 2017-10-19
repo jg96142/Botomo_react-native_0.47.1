@@ -173,18 +173,18 @@ export default class Botomo extends React.Component {
     .then((res) => res.text())
     .then((responseData) => {
       // 接到 Data
-      Alert.alert(
-            '你覺得這樣的天氣如何',
-            null,
-            [
-              {text: '太熱了', onPress: () => console.log('Too Hot Pressed!')},
-              {text: '滿舒服的', onPress: () => console.log('Comfortable Pressed!')},
-              {text: '太冷了', onPress: () => console.log('Too Cold Pressed!')},
-            ]
-      );
+      // Alert.alert(
+      //       '你覺得這樣的天氣如何',
+      //       null,
+      //       [
+      //         {text: '太熱了', onPress: () => console.log('Too Hot Pressed!')},
+      //         {text: '滿舒服的', onPress: () => console.log('Comfortable Pressed!')},
+      //         {text: '太冷了', onPress: () => console.log('Too Cold Pressed!')},
+      //       ]
+      // );
       var cut = JSON.parse(responseData);
       
-      this.onReceive(responseData);
+      // this.onReceive(responseData);
       this.onReceive("Request = "+cut.request);
       this.onReceive("Intent = "+cut.intent);
       this.onReceive("Location = "+cut.location);
