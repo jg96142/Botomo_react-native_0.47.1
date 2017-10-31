@@ -24,28 +24,34 @@ import CustomView from './CustomView';
 import Moment from 'moment';
 //import SQLite from 'react-native-sqlite-storage';
 import DeviceInfo from 'react-native-device-info';
-//import ReactNativePushNotificationPackage from 'react-native-push-notification';
+import {StackNavigator} from 'react-navigation';
+//import { Home } from './HomeScreen';
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 var PushNotification = require('react-native-push-notification');
-PushNotification.configure({
 
+// let user = {
+//   name:''
+// }
+// let greeting = {
+//  normal_greeting: '',
+//  age: 30,
+//  traits: {hair: 'brown', eyes: 'brown'},
+// };
+
+PushNotification.configure({
     // (optional) Called when Token is generated (iOS and Android)
     onRegister: function(token) {
         console.log( 'TOKEN:', token );
     },
-
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
         console.log( 'NOTIFICATION:', notification );
     },
-
     // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
     senderID: "YOUR GCM SENDER ID",
-
     // Should the initial notification be popped automatically
     // default: true
     popInitialNotification: true,
-
     /**
       * (optional) default: true
       * - Specified if permissions (ios) and token (android and ios) will requested or not,
@@ -60,42 +66,43 @@ PushNotification.localNotification({
     autoCancel: true, // (optional) default: true
     largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
     smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher"
-    bigText: "My big text that will be shown when notification is expanded", // (optional) default: "message" prop
-    subText: "This is a subText", // (optional) default: none
+    bigText: "我在試試看", // (optional) default: "message" prop
+    subText: "試試看", // (optional) default: none
     color: "red", // (optional) default: system default
     vibrate: true, // (optional) default: true
     vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
     tag: 'some_tag', // (optional) add tag to message
     group: "group", // (optional) add group to message
     ongoing: false, // (optional) set whether this is an "ongoing" notification
-
-
 //     iOS and Android properties 
-    title: "My Notification Title", // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
-    message: "My Notification Message", // (required)
-    playSound: false, // (optional) default: true
-    soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+    title: "標題", // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+    message: "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR", // (required)
+    //playSound: false, // (optional) default: true
+    //soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
     number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
     //repeatType: 'day', // (Android only) Repeating interval. Could be one of `week`, `day`, `hour`, `minute, `time`. If specified as time, it should be accompanied by one more parameter 'repeatTime` which should the number of milliseconds between each interval
-    actions: '["Yes", "No"]',  // (Android only) See the doc for notification actions to know more
+    actions: '["知道囉"]',  // (Android only) See the doc for notification actions to know more
 });
-  // Register all the valid actions for notifications here and add the action handler for each action
-  // PushNotificationAndroid.registerNotificationActions(['Accept','Reject','Yes','No']);
-  // DeviceEventEmitter.addListener('notificationActionReceived', function(action){
-  //   console.log ('Notification action received: ' + action);
-  //   const info = JSON.parse(action.dataJSON);
-  //   if (info.action == 'Accept') {
-  //     // Do work pertaining to Accept action here
-  //     PushNotification.cancelAllLocalNotifications();
-  //   } else if (info.action == 'Reject') {
-  //     // Do work pertaining to Reject action here
-  //     PushNotification.cancelAllLocalNotifications();
-  //   }
-  //   // Add all the required actions handlers
-  // });
 
 
-export default class Botomo extends React.Component {
+class Home extends React.Component {
+  static navigationOptions = {
+    title: 'BOTOMO是你唯一的朋友',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <Button
+        onPress={() => navigate('Botomo')}
+        title="跟朋友聊天囉"
+        color="#ffa07a"
+      />
+
+    );
+  }
+}
+
+class Botomo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,7 +129,6 @@ export default class Botomo extends React.Component {
     initialPosition: 'unknown',
     lastPosition: 'unknown',
   };
-
   watchID: ?number = null;
 
   componentDidMount() {
@@ -148,7 +154,6 @@ export default class Botomo extends React.Component {
       };
     });
   }
-
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -159,9 +164,6 @@ export default class Botomo extends React.Component {
   //     };
   //   });
   // }
-
-  onNotification(id: '0'){}
-   
 
   onSend(messages = []) {
     this.setState((previousState) => {
@@ -206,13 +208,6 @@ export default class Botomo extends React.Component {
   }
 
   renderCustomActions(props) {
-    if (Platform.OS === 'ios') {
-      return (
-        <CustomActions
-          {...props}
-        />
-      );
-    }
     const options = {
       'Action 1': (props) => {
         alert('option 1');
@@ -229,14 +224,27 @@ export default class Botomo extends React.Component {
       />
     );
   }
+  button(){
+    // render: function() {
+      return (
+        <View>
+          <Button
+            onPress={console.log("press")}
+            title="Press Me"
+            //accessibilityLabel="See an informative alert"
+          />
+      </View>
+      );
+    //},
+  }
   getEvent(message) {
     var gpscut = JSON.parse(this.state.lastPosition);
     fetch("http://botomo.kyotw.me:20201/bot_response/", {
       method: "POST",
       body: JSON.stringify({
         id: message,
-        longitude: gpscut.coords.longitude,
-        latitude: gpscut.coords.latitude
+        lng: gpscut.coords.longitude,
+        lat: gpscut.coords.latitude
         //createdAt: new Date(),
       })
     })
@@ -252,7 +260,7 @@ export default class Botomo extends React.Component {
       //         {text: '滿舒服的', onPress: () => console.log('Comfortable Pressed!')},
       //         {text: '太冷了', onPress: () => console.log('Too Cold Pressed!')},
       //       ]
-      );
+      //);
       var cut = JSON.parse(responseData);
       
       this.onReceive(responseData);
@@ -264,10 +272,18 @@ export default class Botomo extends React.Component {
       this.onReceive("longitude = "+gpscut.coords.longitude);
       this.onReceive("latitude = "+gpscut.coords.latitude);
       this.onReceive("UniqueID = "+this.getUniqueID());
-      this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?")
-      /*this.onReceive(this.getModel()); by kyo*/
-      //this.populateDatabase();
-
+      this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
+      //this.onReceive(this.button());
+      
+      // fetch("http://botomo.kyotw.me:20201/bot_response/", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     id: message,
+      //     longitude: gpscut.coords.longitude,
+      //     latitude: gpscut.coords.latitude
+      //     //createdAt: new Date(),
+      //   })
+      // })
       this.setState((previousState) => {
           return {
            typingText: null,
@@ -282,7 +298,7 @@ export default class Botomo extends React.Component {
     })*/
     .done();
   }
-
+  onNotification(id: '0'){};
 
   renderBubble(props) {
     return (
@@ -386,4 +402,12 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('Botomo', () => Botomo);
+const page = StackNavigator({
+  Home: { screen: Home},
+  Botomo: { 
+    screen: Botomo,
+    path: './index.android',
+  },
+});
+export default page;
+AppRegistry.registerComponent('Botomo', () => page);
