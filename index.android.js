@@ -10,7 +10,8 @@ import {
   Alert,
   Image,
   AsyncStorage,
-  PermissionsAndroid
+  PermissionsAndroid,
+  TextInput
 } from 'react-native';
 import {
   GiftedChat,
@@ -86,18 +87,28 @@ PushNotification.localNotification({
 
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: '你的名字?' };
+  }
   static navigationOptions = {
     title: 'BOTOMO是你唯一的朋友',
   };
   render() {
     const { navigate } = this.props.navigation;
     return (
+      <View>
+      <TextInput
+        style={{height: 40, borderColor: '#87cefa', borderWidth: 1, marginBottom: 10}}
+        onChangeText={(text) => this.setState({text})}
+        placeholder={this.state.text}
+      />
       <Button
         onPress={() => navigate('Botomo')}
         title="跟朋友聊天囉"
         color="#ffa07a"
       />
-
+      </View>
     );
   }
 }
