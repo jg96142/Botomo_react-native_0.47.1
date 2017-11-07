@@ -11,7 +11,7 @@ import {
   Image,
   AsyncStorage,
   PermissionsAndroid,
-  TextInput
+  TextInput,
 } from 'react-native';
 import {
   GiftedChat,
@@ -83,13 +83,24 @@ PushNotification.localNotification({
     //repeatType: 'day', // (Android only) Repeating interval. Could be one of `week`, `day`, `hour`, `minute, `time`. If specified as time, it should be accompanied by one more parameter 'repeatTime` which should the number of milliseconds between each interval
     actions: '["知道囉"]',  // (Android only) See the doc for notification actions to know more
 });
-
+class WithLabel extends React.Component {
+  render() {
+    return (
+      <View style={styles.labelContainer}>
+        <View style={styles.label}>
+          <Text>{this.props.label}</Text>
+        </View>
+        {this.props.children}
+      </View>
+    );
+  }
+}
 /*主畫面*/
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      holder: '你的名字?',
+      'holder': '你的名字?',
       'name': '',
     };
   }
@@ -102,34 +113,32 @@ class Home extends React.Component {
     AsyncStorage.setItem('name', value);
     this.setState({ 'name': value });
   }
-
   render() { 
-    // if user_data==
+    user_data=this.state.name;
     const { navigate } = this.props.navigation;
     return (
-      user_data=this.state.name,
-      <View>
-      <TextInput
-        style={{height: 40, borderColor: '#87cefa', borderWidth: 1, marginBottom: 10}}
-        onChangeText={this.set_name}
-        placeholder={this.state.holder}
-        //onEndEditing={console.log(this.state.name)}
-        //onSubmitEditing={console.log(this.state.name)}
-      />
-      <Text>
-          {user_data}
-      </Text>
-      <Button
-        onPress={() => navigate('Botomo')}
-        title="跟朋友聊天囉"
-        color="#ffa07a"
-      />
-      <Button
-        onPress={() => Alert.alert(user_data)}
-        title="test"
-        color="black"
-      />
-      </View>
+      <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
+      <Text style={{flex:1}}></Text>
+      <WithLabel label="所以...">
+        <TextInput
+          style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
+          onChangeText={this.set_name}
+          placeholder={this.state.holder}
+          // onEndEditing={()=>editable={false}}
+          //editable={false}
+          //onSubmitEditing={console.log(this.state.name)}
+        />
+      </WithLabel>
+        <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
+            你的名字是{user_data}!?
+        </Text>
+
+        <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+          <Text style={styles.buttonText}>
+            跟朋友聊天囉
+          </Text>
+        </TouchableOpacity>
+      </Image>
     );
   }
 }
@@ -434,6 +443,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  button: {
+    margin: 20,
+    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: '#ffa07a',
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    marginVertical: 2,
+  },
+  label: {
+    width: 90,
+    alignItems: 'flex-end',
+    marginRight: 7,
+    paddingTop: 27,
   },
 });
 
