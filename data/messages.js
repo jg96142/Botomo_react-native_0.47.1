@@ -1,30 +1,43 @@
-let greeting = {
-  normal_greeting: '今天來點兔子嗎',
-  sadism_greeting: '你現在是有什麼問題啦',
-  maid_greeting: '請問主人有什麼吩咐',
-  tsundere_greeting: '我..我..才不是在關心你勒',
-  buddy_greeting: '嘿，今天過得怎樣啊',
+let botomo_greeting = {
+  normal: '今天來點兔子嗎',
+  sadism: '你現在是有什麼問題啦',
+  maid: '請問主人有什麼吩咐',
+  tsundere: '我..我..才不是在關心你勒',
+  buddy: '嘿，今天過得怎樣啊',
 };
+let user_greeting = {
+  normal: '我要貓咪',
+  sadism: '對..對....對不起....',
+  maid: '躺下',
+  tsundere: '(>///<',
+  buddy: '還不錯啊，你勒',
+}
 state = {
     greeting_text: "",
+    user_response: "",
 };
 var random=Math.floor((Math.random() * 5) + 1);
 switch(random){
-  case 1: this.state.greeting_text=greeting.normal_greeting;
+  case 1: this.state.greeting_text=botomo_greeting.normal;
+          this.state.user_response=user_greeting.normal;
           break;
-  case 2: this.state.greeting_text=greeting.sadism_greeting;
+  case 2: this.state.greeting_text=botomo_greeting.sadism;
+          this.state.user_response=user_greeting.sadism;
           break;
-  case 3: this.state.greeting_text=greeting.maid_greeting;
+  case 3: this.state.greeting_text=botomo_greeting.maid;
+          this.state.user_response=user_greeting.maid;
           break;
-  case 4: this.state.greeting_text=greeting.tsundere_greeting;
+  case 4: this.state.greeting_text=botomo_greeting.tsundere;
+          this.state.user_response=user_greeting.tsundere;
           break;
-  case 5: this.state.greeting_text=greeting.buddy_greeting;
+  case 5: this.state.greeting_text=botomo_greeting.buddy;
+          this.state.user_response=user_greeting.buddy;
           break;
 }
 module.exports = [
   {
     _id: Math.round(Math.random() * 1000000),
-    text: '對..對不起..',
+    text: this.state.user_response,
     createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
     user: {
       _id: 1,
