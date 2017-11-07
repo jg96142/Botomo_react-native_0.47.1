@@ -26,19 +26,19 @@ import Moment from 'moment';
 //import SQLite from 'react-native-sqlite-storage';
 import DeviceInfo from 'react-native-device-info';
 import {StackNavigator} from 'react-navigation';
-//import { Home } from './HomeScreen';
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 var PushNotification = require('react-native-push-notification');
+/*招呼跟回覆用語*/
+var user_data = '';
 
-// let user = {
-//   name:''
-// }
-// let greeting = {
-//  normal_greeting: '',
-//  age: 30,
-//  traits: {hair: 'brown', eyes: 'brown'},
-// };
-
+let weather_response = {
+ normal_greeting: '',
+ sadism_greeting: '',
+ maid_greeting: '',
+ tsundere_greeting: '',
+ buddy_greeting: '',
+};
+/*推播*/
 PushNotification.configure({
     // (optional) Called when Token is generated (iOS and Android)
     onRegister: function(token) {
@@ -85,34 +85,57 @@ PushNotification.localNotification({
     actions: '["知道囉"]',  // (Android only) See the doc for notification actions to know more
 });
 
-
+/*主畫面*/
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { text: '你的名字?' };
+    this.state = { 
+      holder: '你的名字?',
+      name: '',
+    };
   }
   static navigationOptions = {
     title: 'BOTOMO是你唯一的朋友',
   };
-  render() {
+  render() { 
     const { navigate } = this.props.navigation;
     return (
+      user_data=this.state.name,
       <View>
       <TextInput
         style={{height: 40, borderColor: '#87cefa', borderWidth: 1, marginBottom: 10}}
-        onChangeText={(text) => this.setState({text})}
-        placeholder={this.state.text}
+        onChangeText={(name) => this.setState({name})}
+        placeholder={this.state.holder}
+        //onEndEditing={console.log(this.state.name)}
+        //onSubmitEditing={console.log(this.state.name)}
       />
       <Button
         onPress={() => navigate('Botomo')}
         title="跟朋友聊天囉"
         color="#ffa07a"
       />
+
+      <Button
+        onPress={() => Alert.alert(user_data)}
+        title="test"
+        color="black"
+      />
       </View>
     );
+/*  更新使用者名字資料*/
+    // console.log(user_data);
+    // Alert.alert(user_data);
+    // AsyncStorage.setItem('@user:key', JSON.stringify(user_data), () => {
+    //   AsyncStorage.mergeItem('@user:key', JSON.stringify(user_data_update), () => {
+    //     AsyncStorage.getItem('@user:key', (err, result) => {
+    //       //console.log(result);
+    //     });
+    //   });
+    // });
+
   }
 }
-
+/*聊天頁面*/
 class Botomo extends React.Component {
   constructor(props) {
     super(props);
@@ -121,6 +144,8 @@ class Botomo extends React.Component {
       //loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
+      initialPosition: 'unknown',
+      lastPosition: 'unknown',
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -133,15 +158,16 @@ class Botomo extends React.Component {
     //this.onLoadEarlier = this.onLoadEarlier.bind(this)
     this._isAlright = null;
   }
+/*拿手機ID*/
   getUniqueID() {
     return RNDeviceInfo.uniqueId;
   }
-  state = {
-    initialPosition: 'unknown',
-    lastPosition: 'unknown',
-  };
+/*目前所在位置*/
+  // state = {
+  //   initialPosition: 'unknown',
+  //   lastPosition: 'unknown',
+  // };
   watchID: ?number = null;
-
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -156,6 +182,7 @@ class Botomo extends React.Component {
       this.setState({lastPosition});
     });
   }
+
   componentWillMount() {
     navigator.geolocation.clearWatch(this.watchID);
     this._isMounted = true;
@@ -175,7 +202,7 @@ class Botomo extends React.Component {
   //     };
   //   });
   // }
-
+/*查詢送入後端*/
   onSend(messages = []) {
     this.setState((previousState) => {
       return {
@@ -186,6 +213,7 @@ class Botomo extends React.Component {
     this.answerBotomo(messages[0].text)
     // this.answerDemo(messages);
   }
+/*正在輸入*/
   answerBotomo(messages) {
     if (messages.length > 0) {
       if ((messages[0].image || messages[0].location) || !this._isAlright) {
@@ -200,7 +228,7 @@ class Botomo extends React.Component {
       this.getEvent(messages)
     }, 1000);
   }
-
+/*收到的回覆*/
   onReceive(text) {   
     this.setState((previousState) => {
       return {
@@ -217,11 +245,11 @@ class Botomo extends React.Component {
       };
     });
   }
-
+/*旁邊的加號*/
   renderCustomActions(props) {
     const options = {
       'Action 1': (props) => {
-        alert('option 1');
+        alert(user_data);
       },
       'Action 2': (props) => {
         alert('option 2');
@@ -235,19 +263,20 @@ class Botomo extends React.Component {
       />
     );
   }
-  button(){
-    // render: function() {
-      return (
-        <View>
-          <Button
-            onPress={console.log("press")}
-            title="Press Me"
-            //accessibilityLabel="See an informative alert"
-          />
-      </View>
-      );
-    //},
-  }
+/*嘗試中的按鈕*/
+  // button(){
+  //   render(){
+  //     return (
+  //       <View>
+  //         <Button
+  //           onPress={()=> console.log("press")}
+  //           title="Press Me"
+  //         />
+  //     </View>
+  //     );
+  //   }
+  // }
+/*要回傳的東西*/
   getEvent(message) {
     var gpscut = JSON.parse(this.state.lastPosition);
     fetch("http://botomo.kyotw.me:20201/bot_response/", {
@@ -259,10 +288,17 @@ class Botomo extends React.Component {
         //createdAt: new Date(),
       })
     })
-
+    // fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
+    //     method: "POST",
+    //     body: JSON.stringify({
+    //       id: message
+    //       //createdAt: new Date(),
+    //     })
+    //   })
     .then((res) => res.text())
     .then((responseData) => {
       // 接到 Data
+      // Alert.alert(user_data);
       // Alert.alert(
       //       '你覺得這樣的天氣如何',
       //       null,
@@ -278,39 +314,28 @@ class Botomo extends React.Component {
       this.onReceive("Request = "+cut.request);
       this.onReceive("Intent = "+cut.intent);
       this.onReceive("Location = "+cut.location);
+      this.onReceive("WindDir = "+cut.WindDir);
+      this.onReceive("Temp = "+cut.Temp);
       this.onReceive("--DeviceInfo--");
       this.onReceive("GeoLocation = "+this.state.lastPosition);
       this.onReceive("longitude = "+gpscut.coords.longitude);
       this.onReceive("latitude = "+gpscut.coords.latitude);
       this.onReceive("UniqueID = "+this.getUniqueID());
       this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-      //this.onReceive(this.button());
+      //this.onReceive(responseData);
       
-      // fetch("http://botomo.kyotw.me:20201/bot_response/", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     id: message,
-      //     longitude: gpscut.coords.longitude,
-      //     latitude: gpscut.coords.latitude
-      //     //createdAt: new Date(),
-      //   })
-      // })
+      
       this.setState((previousState) => {
           return {
            typingText: null,
           };
       });
-      //alert(this.state.text)
-      //this.state.text=.results[0].name;
-    })/*
-    .catch((error) => {
-      //console.log(error);
-      alert('error');
-    })*/
+    })
     .done();
   }
+/*推播出來*/
   onNotification(id: '0'){};
-
+/*染色的東西*/
   renderBubble(props) {
     return (
       <Bubble
@@ -372,6 +397,7 @@ class Botomo extends React.Component {
     }
     return null;
   }
+/*其他東西*/
   render() {
     return (
        <GiftedChat
