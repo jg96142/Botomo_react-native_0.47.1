@@ -1,6 +1,6 @@
 let botomo_greeting = {
   normal: '今天來點兔子嗎',
-  sadism: '你現在是有什麼問題啦',
+  sadism: '不要用你那骯髒的手碰我',
   maid: '請問主人有什麼吩咐',
   tsundere: '我..我..才不是在關心你勒',
   buddy: '嘿，今天過得怎樣啊',
@@ -15,23 +15,28 @@ let user_greeting = {
 state = {
     greeting_text: "",
     user_response: "",
+    botomo_avatar: "",
 };
 var random=Math.floor((Math.random() * 5) + 1);
 switch(random){
   case 1: this.state.greeting_text=botomo_greeting.normal;
           this.state.user_response=user_greeting.normal;
-          break;
+          this.state.botomo_avatar="https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
   case 2: this.state.greeting_text=botomo_greeting.sadism;
           this.state.user_response=user_greeting.sadism;
+          this.state.botomo_avatar="http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
           break;
   case 3: this.state.greeting_text=botomo_greeting.maid;
           this.state.user_response=user_greeting.maid;
+          this.state.botomo_avatar="http://i.osimg.com/vi/nTLIUBdJZ9.jpg"
           break;
   case 4: this.state.greeting_text=botomo_greeting.tsundere;
           this.state.user_response=user_greeting.tsundere;
+          this.state.botomo_avatar="https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
           break;
   case 5: this.state.greeting_text=botomo_greeting.buddy;
           this.state.user_response=user_greeting.buddy;
+          this.state.botomo_avatar="http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
           break;
 }
 module.exports = [
@@ -56,8 +61,8 @@ module.exports = [
     createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
     user: {
       _id: 2,
-      name: 'React Native',
-      avatar: 'http://www.freeiconspng.com/uploads/brown-white-cat-png-4.png',
+      name: 'Botomo',
+      avatar: this.state.botomo_avatar,
     },
   },
 ];

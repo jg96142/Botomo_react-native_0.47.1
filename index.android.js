@@ -28,9 +28,8 @@ import DeviceInfo from 'react-native-device-info';
 import {StackNavigator} from 'react-navigation';
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 var PushNotification = require('react-native-push-notification');
-/*招呼跟回覆用語*/
+/*使用者名字和回覆用語*/
 var user_data = '';
-
 let weather_response = {
  normal_greeting: '',
  sadism_greeting: '',
@@ -91,30 +90,40 @@ class Home extends React.Component {
     super(props);
     this.state = { 
       holder: '你的名字?',
-      name: '',
+      'name': '',
     };
   }
   static navigationOptions = {
     title: 'BOTOMO是你唯一的朋友',
   };
+/*名字在資料庫*/
+  componentDidMount = () =>AsyncStorage.getItem('name').then((value) =>this.setState({ 'name': value }))
+  set_name = (value) =>{
+    AsyncStorage.setItem('name', value);
+    this.setState({ 'name': value });
+  }
+
   render() { 
+    // if user_data==
     const { navigate } = this.props.navigation;
     return (
       user_data=this.state.name,
       <View>
       <TextInput
         style={{height: 40, borderColor: '#87cefa', borderWidth: 1, marginBottom: 10}}
-        onChangeText={(name) => this.setState({name})}
+        onChangeText={this.set_name}
         placeholder={this.state.holder}
         //onEndEditing={console.log(this.state.name)}
         //onSubmitEditing={console.log(this.state.name)}
       />
+      <Text>
+          {user_data}
+      </Text>
       <Button
         onPress={() => navigate('Botomo')}
         title="跟朋友聊天囉"
         color="#ffa07a"
       />
-
       <Button
         onPress={() => Alert.alert(user_data)}
         title="test"
@@ -122,17 +131,6 @@ class Home extends React.Component {
       />
       </View>
     );
-/*  更新使用者名字資料*/
-    // console.log(user_data);
-    // Alert.alert(user_data);
-    // AsyncStorage.setItem('@user:key', JSON.stringify(user_data), () => {
-    //   AsyncStorage.mergeItem('@user:key', JSON.stringify(user_data_update), () => {
-    //     AsyncStorage.getItem('@user:key', (err, result) => {
-    //       //console.log(result);
-    //     });
-    //   });
-    // });
-
   }
 }
 /*聊天頁面*/
