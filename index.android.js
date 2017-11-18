@@ -31,11 +31,12 @@ var PushNotification = require('react-native-push-notification');
 /*使用者名字和回覆用語*/
 var user_data = '';
 let weather_response = {
- normal_greeting: '',
- sadism_greeting: '',
- maid_greeting: '',
- tsundere_greeting: '',
- buddy_greeting: '',
+  normal_response1: '的氣溫是',
+  normal_response2: '度喔'
+  //sadism_response: '',
+  // maid_response: '',
+  // tsundere_response: '',
+  // buddy_response: '',
 };
 /*推播*/
 PushNotification.configure({
@@ -151,8 +152,8 @@ class Botomo extends React.Component {
       //loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
-      initialPosition: 'unknown',
-      lastPosition: 'unknown',
+      initialPosition: '',
+      lastPosition: '',
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -246,7 +247,7 @@ class Botomo extends React.Component {
           user: {
             _id: 2,
             name: 'React Native',
-            avatar: 'http://www.freeiconspng.com/uploads/brown-white-cat-png-4.png',
+            //avatar: 'http://www.freeiconspng.com/uploads/brown-white-cat-png-4.png',
           },         
         }),
       };
@@ -329,7 +330,7 @@ class Botomo extends React.Component {
       this.onReceive("latitude = "+gpscut.coords.latitude);
       this.onReceive("UniqueID = "+this.getUniqueID());
       this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-      //this.onReceive(responseData);
+      //this.onReceive(cut.location+" "+this.weather_response.normal_response1);
       
       
       this.setState((previousState) => {
@@ -449,7 +450,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 20,
     paddingRight: 20,
-    backgroundColor: '#ffa07a',
+    backgroundColor: '#228b22',
     borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
