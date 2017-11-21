@@ -98,14 +98,6 @@ switch(property){
           };
           break;
 }
-// let weather_response = {
-//   normal_response1: '的氣溫是',
-//   normal_response2: '度喔'
-//   //sadism_response: '',
-//   // maid_response: '',
-//   // tsundere_response: '',
-//   // buddy_response: '',
-// };
 
 class WithLabel extends React.Component {
   render() {
@@ -288,16 +280,18 @@ class Botomo extends React.Component {
   }
 /*嘗試中的按鈕*/
   // button(){
-  //   render(){
+  //   //render(){
   //     return (
-  //       <View>
-  //         <Button
-  //           onPress={()=> console.log("press")}
-  //           title="Press Me"
-  //         />
-  //     </View>
+        
+
+  //          <TouchableOpacity >
+  //            <Text >
+  //              跟朋友聊天囉
+  //            </Text>
+  //          </TouchableOpacity>
+        
   //     );
-  //   }
+  //   //}
   // }
 /*要回傳的東西*/
   getEvent(message) {
@@ -324,7 +318,7 @@ class Botomo extends React.Component {
       // 接到 Data
       var cut = JSON.parse(responseData);
       
-      // this.onReceive(responseData);
+      this.onReceive(responseData);
       // this.onReceive("Request = "+cut.request);
       // this.onReceive("Intent = "+cut.intent);
       // this.onReceive("Location = "+cut.location);
@@ -336,24 +330,24 @@ class Botomo extends React.Component {
       // this.onReceive("latitude = "+gpscut.coords.latitude);
       // this.onReceive("UniqueID = "+this.getUniqueID());
       //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-      //this.onReceive(cut.CI);
-
-      if(cut.T!=null){
-        if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
-        else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+      //this.onReceive(this.button());
+      if (cut.intent!="Weather") this.onReceive(cut.response);
+      else{
+        if(cut.T!=null){
+          if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
+          else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+        }
+        if(cut.POP!=null){
+          this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
+          if(cut.POP>=70) this.onReceive(weather_response.response_rain);
+        }
+        if(cut.AT!=null){
+          temp=parseInt(cut.AT);
+          if(temp>=28) this.onReceive(weather_response.reponse_hot);
+          else if(temp<=21) this.onReceive(weather_response.reponse_cold);
+          else this.onReceive(weather_response.response_fine);
+        }
       }
-      if(cut.POP!=null){
-        this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
-        if(cut.POP>=70) this.onReceive(weather_response.response_rain);
-      }
-      if(cut.AT!=null){
-        temp=parseInt(cut.AT);
-        if(temp>=28) this.onReceive(weather_response.reponse_hot);
-        else if(temp<=21) this.onReceive(weather_response.reponse_cold);
-        else this.onReceive(weather_response.response_fine);
-      }
-      
-      
       this.setState((previousState) => {
           return {
            typingText: null,
