@@ -3,6 +3,7 @@ import {
   AppRegistry,
   Platform,
   StyleSheet,
+  Dimensions,
   Text,
   View,
   Button,
@@ -25,6 +26,9 @@ import CustomView from './CustomView';
 import Moment from 'moment';
 import DeviceInfo from 'react-native-device-info';
 import {StackNavigator} from 'react-navigation';
+
+const { height } = Dimensions.get('window');
+
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 /*使用者名字和回覆用語*/
 var user_data = '';
@@ -71,31 +75,60 @@ class Home extends React.Component {
     user_data=this.state.name;
     const { navigate } = this.props.navigation;
     return (
-      <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
-        <Text style={{flex:1}}></Text>
-        <WithLabel label="所以...">
-          <TextInput
-            style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
-            onChangeText={this.set_name}
-            placeholder={this.state.holder}
-            // onEndEditing={()=>editable={false}}
-            //editable={false}
-            //onSubmitEditing={console.log(this.state.name)}
-          />
-        </WithLabel>
-        <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
-            你的名字是{user_data}!?
-        </Text>
+      <View style={{ flex: 1 }}>
 
-        <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
-          <Text style={styles.buttonText}>
-            跟朋友聊天囉
-          </Text>
-        </TouchableOpacity>
-      </Image>
+        <Image
+          source={require('./background.png')}  
+          style={{ 
+            //backgroundColor: '#ccc',
+            flex: 1,
+            resizeMode:'stretch',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+          }}
+        >   
+          <View style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+            <WithLabel label="所以..." >
+              <TextInput
+                style={{
+                  height: 40, 
+                  marginBottom: 15, 
+                  marginTop: 15, 
+                  width:230,
+                  backgroundColor: 'rgba(0,0,0,0)',
+                }}
+                onChangeText={this.set_name}
+                placeholder={this.state.holder}
+                // onEndEditing={()=>editable={false}}
+                //editable={false}
+                //onSubmitEditing={console.log(this.state.name)}
+              />
+            </WithLabel>
+            <Text style={{
+              color: '#228b22', 
+              fontSize: 25, 
+              marginBottom: 15, 
+              textAlign: 'center',
+              backgroundColor: 'rgba(0,0,0,0)',
+            }}>
+                你的名字是{user_data}!?
+            </Text>
+          </View>
+
+          <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+            <Text style={styles.buttonText}>
+              跟朋友聊天囉
+            </Text>
+          </TouchableOpacity>
+        </Image>
+      </View>
     );
   }
 }
+
+
 /*聊天頁面*/
 class Botomo extends React.Component {
   constructor(props) {
@@ -238,6 +271,7 @@ class Botomo extends React.Component {
   //   }
   // }
 /*要回傳的東西*/
+
   getEvent(message) {
     var gpscut = JSON.parse(this.state.lastPosition);
     fetch("http://botomo.kyotw.me:20201/bot_response/", {
@@ -245,40 +279,41 @@ class Botomo extends React.Component {
       body: JSON.stringify({
         id: message,
         lng: gpscut.coords.longitude,
-        lat: gpscut.coords.latitude
+        lat: gpscut.coords.latitude,
+        device: this.getUniqueID()
         //createdAt: new Date(),
       })
     })
     // fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
     //     method: "POST",
     //     body: JSON.stringify({
-    //       id: message
-    //       //createdAt: new Date(),
+    //       
+            // id:deviceID,
+            // SearchTime:refResponse.TimeS,
+            // SearchLoc:refResponse.location,
+            // SearchTemp:refResponse.AT,
+            // Msg:message
+    //      
     //     })
     //   })
     .then((res) => res.text())
     .then((responseData) => {
       // 接到 Data
-      // Alert.alert(user_data);
-      // Alert.alert(
-      //       '你覺得這樣的天氣如何',
-      //       null,
-      //       [
-      //         {text: '太熱了', onPress: () => console.log('Too Hot Pressed!')},
-      //         {text: '滿舒服的', onPress: () => console.log('Comfortable Pressed!')},
-      //         {text: '太冷了', onPress: () => console.log('Too Cold Pressed!')},
-      //       ]
-      //);
+      
       var cut = JSON.parse(responseData);
       
-      this.onReceive(responseData);
-      this.onReceive("Request = "+cut.request);
-      this.onReceive("Intent = "+cut.intent);
-      this.onReceive("Location = "+cut.location);
-      this.onReceive("WindDir = "+cut.WindDir);
-      this.onReceive("Temp = "+cut.Temp);
+      if (cut.intent!="weather"){
+        this.onReceive(responseData);
+        this.onReceive("response = "+cut.response);
+      } else{
+        this.onReceive(responseData);
+        this.onReceive("Request = "+cut.request);
+        this.onReceive("Intent = "+cut.intent);
+        this.onReceive("Location = "+cut.location);
+        this.onReceive("WindDir = "+cut.WindDir);
+        this.onReceive("Temp = "+cut.Temp);
+      }
       this.onReceive("--DeviceInfo--");
-      this.onReceive("GeoLocation = "+this.state.lastPosition);
       this.onReceive("longitude = "+gpscut.coords.longitude);
       this.onReceive("latitude = "+gpscut.coords.latitude);
       this.onReceive("UniqueID = "+this.getUniqueID());
