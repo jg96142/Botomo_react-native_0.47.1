@@ -24,9 +24,9 @@ switch(random){
           this.state.user_response=user_greeting.normal;
           this.state.botomo_avatar="https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
           break;
-  case 2: this.state.greeting_text=botomo_greeting.sadism;
-          this.state.user_response=user_greeting.sadism;
-          this.state.botomo_avatar="http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
+  case 2: this.state.greeting_text=botomo_greeting.buddy;
+          this.state.user_response=user_greeting.buddy;
+          this.state.botomo_avatar="http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
           break;
   case 3: this.state.greeting_text=botomo_greeting.maid;
           this.state.user_response=user_greeting.maid;
@@ -36,14 +36,12 @@ switch(random){
           this.state.user_response=user_greeting.tsundere;
           this.state.botomo_avatar="https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
           break;
-  case 5: this.state.greeting_text=botomo_greeting.buddy;
-          this.state.user_response=user_greeting.buddy;
-          this.state.botomo_avatar="http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
+  case 5: this.state.greeting_text=botomo_greeting.sadism;
+          this.state.user_response=user_greeting.sadism;
+          this.state.botomo_avatar="http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
           break;
 }
 var now_avatar=this.state.botomo_avatar;
-var now_property=random;
-//alert(now_avatar);
 module.exports = {
   initial_message :[
     {
@@ -73,7 +71,5 @@ module.exports = {
     },
   ],
   avatar:now_avatar,
-  property:now_property
+  property:random
 };
-
-//module.exports = {now_avatar,now_property};
