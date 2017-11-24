@@ -121,7 +121,7 @@ class Home extends React.Component {
     };
   }
   static navigationOptions = {
-    title: 'BOTOMO是你唯一的朋友',
+    title: (Platform.OS=='android')?'BOTOMO是你唯一的朋友':'123456',
   };
 /*名字在資料庫*/
   componentDidMount = () =>AsyncStorage.getItem('name').then((value) =>this.setState({ 'name': value }))
