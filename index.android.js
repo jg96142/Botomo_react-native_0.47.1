@@ -25,9 +25,11 @@ import CustomView from './CustomView';
 import Moment from 'moment';
 import DeviceInfo from 'react-native-device-info';
 import {StackNavigator} from 'react-navigation';
+
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 var avatar=require('./data/messages.js').avatar;
 var property=require('./data/messages.js').property;
+
 /*使用者名字和回覆用語*/
 var user_data = '';
 let weather_response ='';
@@ -121,9 +123,9 @@ class Home extends React.Component {
     };
   }
   static navigationOptions = {
-    title: (Platform.OS=='android')?'BOTOMO是你唯一的朋友':'123456',
+    title: 'BOTOMO是你唯一的朋友',
   };
-/*名字在資料庫*/
+  /*名字在資料庫*/
   componentDidMount = () =>AsyncStorage.getItem('name').then((value) =>this.setState({ 'name': value }))
   set_name = (value) =>{
     AsyncStorage.setItem('name', value);
@@ -132,32 +134,88 @@ class Home extends React.Component {
   render() { 
     user_data=this.state.name;
     const { navigate } = this.props.navigation;
-    return (
-      <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
-        <Text style={{flex:1}}></Text>
-        <WithLabel label="所以...">
-          <TextInput
-            style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
-            onChangeText={this.set_name}
-            placeholder={this.state.holder}
-            // onEndEditing={()=>editable={false}}
-            //editable={false}
-            //onSubmitEditing={console.log(this.state.name)}
-          />
-        </WithLabel>
-        <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
-            你的名字是{user_data}!?
-        </Text>
-
-        <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
-          <Text style={styles.buttonText}>
-            跟朋友聊天囉
+    if (Platform.OS=='android'){
+      return (
+        <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
+          <Text style={{flex:1}}></Text>
+          <WithLabel label="所以...">
+            <TextInput
+              style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
+              onChangeText={this.set_name}
+              placeholder={this.state.holder}
+              // onEndEditing={()=>editable={false}}
+              //editable={false}
+              //onSubmitEditing={console.log(this.state.name)}
+            />
+          </WithLabel>
+          <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
+              你的名字是{user_data}!?
           </Text>
-        </TouchableOpacity>
-      </Image>
-    );
+
+          <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+            <Text style={styles.buttonText}>
+              跟朋友聊天囉
+            </Text>
+          </TouchableOpacity>
+        </Image>
+      );
+    }
+    else {
+      return (
+        <View style={{ flex: 1 }}>
+
+          <Image
+            source={require('./background.png')}  
+            style={{ 
+              //backgroundColor: '#ccc',
+              flex: 1,
+              resizeMode:'stretch',
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+            }}
+          >   
+            <View style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+              <WithLabel label="所以..." >
+                <TextInput
+                  style={{
+                    height: 40, 
+                    marginBottom: 15, 
+                    marginTop: 15, 
+                    width:230,
+                    backgroundColor: 'rgba(0,0,0,0)',
+                  }}
+                  onChangeText={this.set_name}
+                  placeholder={this.state.holder}
+                  // onEndEditing={()=>editable={false}}
+                  //editable={false}
+                  //onSubmitEditing={console.log(this.state.name)}
+                />
+              </WithLabel>
+              <Text style={{
+                color: '#228b22', 
+                fontSize: 25, 
+                marginBottom: 15, 
+                textAlign: 'center',
+                backgroundColor: 'rgba(0,0,0,0)',
+              }}>
+                  你的名字是{user_data}!?
+              </Text>
+            </View>
+
+            <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+              <Text style={styles.buttonText}>
+                跟朋友聊天囉
+              </Text>
+            </TouchableOpacity>
+          </Image>
+        </View>
+      );
+    }
   }
 }
+
 /*聊天頁面*/
 class Botomo extends React.Component {
   constructor(props) {
@@ -205,6 +263,7 @@ class Botomo extends React.Component {
       this.setState({lastPosition});
     });
   }
+
   componentWillMount() {
     navigator.geolocation.clearWatch(this.watchID);
     this._isMounted = true;
@@ -280,20 +339,19 @@ class Botomo extends React.Component {
   }
 /*嘗試中的按鈕*/
   // button(){
-  //   //render(){
+  //   render(){
   //     return (
-        
-
-  //          <TouchableOpacity >
-  //            <Text >
-  //              跟朋友聊天囉
-  //            </Text>
-  //          </TouchableOpacity>
-        
+  //       <View>
+  //         <Button
+  //           onPress={()=> console.log("press")}
+  //           title="Press Me"
+  //         />
+  //     </View>
   //     );
-  //   //}
+  //   }
   // }
 /*要回傳的東西*/
+
   getEvent(message) {
     var gpscut = JSON.parse(this.state.lastPosition);
     fetch("http://botomo.kyotw.me:20201/bot_response/", {
@@ -309,13 +367,19 @@ class Botomo extends React.Component {
     // fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
     //     method: "POST",
     //     body: JSON.stringify({
-    //       id: message
-    //       //createdAt: new Date(),
+    //       
+            // id:deviceID,
+            // SearchTime:refResponse.TimeS,
+            // SearchLoc:refResponse.location,
+            // SearchTemp:refResponse.AT,
+            // Msg:message
+    //      
     //     })
     //   })
     .then((res) => res.text())
     .then((responseData) => {
       // 接到 Data
+      
       var cut = JSON.parse(responseData);
       
       this.onReceive(responseData);
