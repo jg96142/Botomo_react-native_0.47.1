@@ -228,6 +228,10 @@ class Botomo extends React.Component {
       initialPosition: '',
       lastPosition: '',
       response:'',
+      userdataUpdate: false,
+      cacheTimeS:'',
+      cacheLocation:'',
+      cacheAT:'',
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -350,75 +354,101 @@ class Botomo extends React.Component {
   //     );
   //   }
   // }
-/*要回傳的東西*/
 
+  /*要回傳的東西*/
   getEvent(message) {
-    var gpscut = JSON.parse(this.state.lastPosition);
-    fetch("http://botomo.kyotw.me:20201/bot_response/", {
-      method: "POST",
-      body: JSON.stringify({
-        id: message,
-        lng: gpscut.coords.longitude,
-        lat: gpscut.coords.latitude,
-        device: this.getUniqueID()
-        //createdAt: new Date(),
+    var deviceID=this.getUniqueID();
+    /* userdataUpdate */
+    if (this.userdataUpdate){
+      fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
+        method: "POST",
+        body: JSON.stringify({
+          
+            id:deviceID,
+            SearchTime:this.cacheTimeS,
+            SearchLoc:this.cacheLocation,
+            SearchTemp:this.cacheAT,
+            Msg:message
+         
+        })
       })
-    })
-    // fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       
-            // id:deviceID,
-            // SearchTime:refResponse.TimeS,
-            // SearchLoc:refResponse.location,
-            // SearchTemp:refResponse.AT,
-            // Msg:message
-    //      
-    //     })
-    //   })
-    .then((res) => res.text())
-    .then((responseData) => {
-      // 接到 Data
-      
-      var cut = JSON.parse(responseData);
-      
-      this.onReceive(responseData);
-      // this.onReceive("Request = "+cut.request);
-      // this.onReceive("Intent = "+cut.intent);
-      // this.onReceive("Location = "+cut.location);
-      // this.onReceive("WindDir = "+cut.WindDir);
-      // this.onReceive("Temp = "+cut.T);
-      // this.onReceive("--DeviceInfo--");
-      // this.onReceive("GeoLocation = "+this.state.lastPosition);
-      // this.onReceive("longitude = "+gpscut.coords.longitude);
-      // this.onReceive("latitude = "+gpscut.coords.latitude);
-      // this.onReceive("UniqueID = "+this.getUniqueID());
-      //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-      //this.onReceive(this.button());
-      if (cut.intent!="Weather") this.onReceive(cut.response);
-      else{
-        if(cut.T!=null){
-          if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
-          else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+      .then((res) => res.text())
+      .then((responseData) => {
+        this.onReceive(responseData);
+        this.onReceive("Server got the response.");
+        // clean state
+        this.setState((previousState) => {
+            return {
+             typingText: null,
+            };
+        });
+        // next message redirect to weather
+        this.userdataUpdate=false;
+      })
+      .done();
+    }
+    /* toLUIS */
+    else {
+      var gpscut = JSON.parse(this.state.lastPosition);
+      fetch("http://botomo.kyotw.me:20201/bot_response/", {
+        method: "POST",
+        body: JSON.stringify({
+          id: message,
+          lng: gpscut.coords.longitude,
+          lat: gpscut.coords.latitude,
+          device: deviceID
+          //createdAt: new Date(),
+        })
+      })
+      .then((res) => res.text())
+      .then((responseData) => {
+        // 接到 Data
+        
+        var cut = JSON.parse(responseData);
+        
+        this.onReceive(responseData);
+        // this.onReceive("Request = "+cut.request);
+        // this.onReceive("Intent = "+cut.intent);
+        // this.onReceive("Location = "+cut.location);
+        // this.onReceive("WindDir = "+cut.WindDir);
+        // this.onReceive("Temp = "+cut.T);
+        // this.onReceive("--DeviceInfo--");
+        // this.onReceive("GeoLocation = "+this.state.lastPosition);
+        // this.onReceive("longitude = "+gpscut.coords.longitude);
+        // this.onReceive("latitude = "+gpscut.coords.latitude);
+        // this.onReceive("UniqueID = "+this.getUniqueID());
+        //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
+        //this.onReceive(this.button());
+        if (cut.intent!="Weather") this.onReceive(cut.response);
+        else{
+          if(cut.T!=null){
+            if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
+            else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+          }
+          if(cut.POP!=null){
+            this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
+            if(cut.POP>=70) this.onReceive(weather_response.response_rain);
+          }
+          if(cut.AT!=null){
+            temp=parseInt(cut.AT);
+            if(temp>=28) this.onReceive(weather_response.reponse_hot);
+            else if(temp<=21) this.onReceive(weather_response.reponse_cold);
+            else this.onReceive(weather_response.response_fine);
+          }
+          this.cacheTimeS=cut.TimeS;
+          this.cacheLocation=cut.location;
+          this.cacheAT=cut.AT;
         }
-        if(cut.POP!=null){
-          this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
-          if(cut.POP>=70) this.onReceive(weather_response.response_rain);
-        }
-        if(cut.AT!=null){
-          temp=parseInt(cut.AT);
-          if(temp>=28) this.onReceive(weather_response.reponse_hot);
-          else if(temp<=21) this.onReceive(weather_response.reponse_cold);
-          else this.onReceive(weather_response.response_fine);
-        }
-      }
-      this.setState((previousState) => {
-          return {
-           typingText: null,
-          };
-      });
-    })
-    .done();
+        this.setState((previousState) => {
+            return {
+             typingText: null,
+            };
+        });
+        // next message redirect to userdata
+        this.userdataUpdate=true;
+      })
+      .done();
+    }
   }
 /*染色的東西*/
   renderBubble(props) {
