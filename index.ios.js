@@ -25,17 +25,81 @@ import CustomView from './CustomView';
 import Moment from 'moment';
 import DeviceInfo from 'react-native-device-info';
 import {StackNavigator} from 'react-navigation';
+
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
+var avatar=require('./data/messages.js').avatar;
+var property=require('./data/messages.js').property;
+
 /*使用者名字和回覆用語*/
 var user_data = '';
-let weather_response = {
-  normal_response1: '的氣溫是',
-  normal_response2: '度喔'
-  //sadism_response: '',
-  // maid_response: '',
-  // tsundere_response: '',
-  // buddy_response: '',
-};
+let weather_response ='';
+switch(property){
+  case 1: weather_response = {
+            response_CI: '今天天氣',
+            response_CI2: '明天天氣',
+            response_temp: '的氣溫是',
+            response_temp2: '度喔',
+            response_pop: '降雨機率是',
+            response_pop2: '%喔',
+            response_hot: '太陽有點大呢',
+            response_cold: '要帶件外套保暖',
+            response_fine: '兔兔想要出去玩',
+            response_rain: '一直下雨..兔兔覺得難過',
+          };
+          break;
+  case 2:  weather_response = {
+            response_CI: '今天天氣',
+            response_CI2: '明天天氣',
+            response_temp: '的溫度是',
+            response_temp2: '度，真想睡覺阿',
+            response_pop: '降雨機率是',
+            response_pop2: '%，好想睡覺阿',
+            response_hot: '挖，在家曬太陽真好睡阿',
+            response_cold: '窩在被窩真好睡阿',
+            response_fine: '(打哈欠)',
+            response_rain: '下雨就在家睡覺吧',
+          };
+          break;
+  case 3: weather_response = {
+            response_CI: '今天天氣',
+            response_CI2: '明天天氣',
+            response_temp: '是的主人，馬上幫你查詢。該區溫度是',
+            response_temp2: '度',
+            response_pop: '降雨機率為',
+            response_pop2: '%',
+            response_hot: '主人要記得避開太陽',
+            response_cold: '主人，讓兔兔幫您穿外套',
+            response_fine: '請問主人，兔兔可以陪您出門嗎?',
+            response_rain: '主人，這把傘請您帶出門。',
+          };
+          break;
+  case 4: weather_response = {
+            response_CI: '今天天氣',
+            response_CI2: '明天天氣',
+            response_temp: '我..我才不會告訴你那裡',
+            response_temp2: '度的',
+            response_pop: '我也不會告訴你降雨機率是',
+            response_pop2: '%的..哼',
+            response_hot: '你如果曬傷了..我才不會關心你勒..',
+            response_cold: '你不穿外套嗎?我..我這才不是在意你',
+            response_fine: '你不能帶我出門嗎?我才不是想跟你出門，我只是想自己去吃蛋糕啦',
+            response_rain: '如果你淋濕回來感冒，我不管你喔',
+          };
+          break;
+  case 5: weather_response = {
+            response_CI: '今天天氣',
+            response_CI2: '明天天氣',
+            response_temp: '自己不會去查，還要我跟你說',
+            response_temp2: '度',
+            response_pop: '還要我說降雨機率是',
+            response_pop2: '%阿?',
+            response_hot: '如果曬傷了要你好看',
+            response_cold: '如果感冒了，你就不用回來了',
+            response_fine: '跪下道歉阿',
+            response_rain: '淋濕你就完蛋了',
+          };
+          break;
+}
 
 class WithLabel extends React.Component {
   render() {
@@ -61,7 +125,7 @@ class Home extends React.Component {
   static navigationOptions = {
     title: 'BOTOMO是你唯一的朋友',
   };
-/*名字在資料庫*/
+  /*名字在資料庫*/
   componentDidMount = () =>AsyncStorage.getItem('name').then((value) =>this.setState({ 'name': value }))
   set_name = (value) =>{
     AsyncStorage.setItem('name', value);
@@ -70,32 +134,88 @@ class Home extends React.Component {
   render() { 
     user_data=this.state.name;
     const { navigate } = this.props.navigation;
-    return (
-      <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
-        <Text style={{flex:1}}></Text>
-        <WithLabel label="所以...">
-          <TextInput
-            style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
-            onChangeText={this.set_name}
-            placeholder={this.state.holder}
-            // onEndEditing={()=>editable={false}}
-            //editable={false}
-            //onSubmitEditing={console.log(this.state.name)}
-          />
-        </WithLabel>
-        <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
-            你的名字是{user_data}!?
-        </Text>
-
-        <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
-          <Text style={styles.buttonText}>
-            跟朋友聊天囉
+    if (Platform.OS=='android'){
+      return (
+        <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
+          <Text style={{flex:1}}></Text>
+          <WithLabel label="所以...">
+            <TextInput
+              style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
+              onChangeText={this.set_name}
+              placeholder={this.state.holder}
+              // onEndEditing={()=>editable={false}}
+              //editable={false}
+              //onSubmitEditing={console.log(this.state.name)}
+            />
+          </WithLabel>
+          <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
+              你的名字是{user_data}!?
           </Text>
-        </TouchableOpacity>
-      </Image>
-    );
+
+          <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+            <Text style={styles.buttonText}>
+              跟朋友聊天囉
+            </Text>
+          </TouchableOpacity>
+        </Image>
+      );
+    }
+    else {
+      return (
+        <View style={{ flex: 1 }}>
+
+          <Image
+            source={require('./background.png')}  
+            style={{ 
+              //backgroundColor: '#ccc',
+              flex: 1,
+              resizeMode:'stretch',
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+            }}
+          >   
+            <View style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+              <WithLabel label="所以..." >
+                <TextInput
+                  style={{
+                    height: 40, 
+                    marginBottom: 15, 
+                    marginTop: 15, 
+                    width:230,
+                    backgroundColor: 'rgba(0,0,0,0)',
+                  }}
+                  onChangeText={this.set_name}
+                  placeholder={this.state.holder}
+                  // onEndEditing={()=>editable={false}}
+                  //editable={false}
+                  //onSubmitEditing={console.log(this.state.name)}
+                />
+              </WithLabel>
+              <Text style={{
+                color: '#228b22', 
+                fontSize: 25, 
+                marginBottom: 15, 
+                textAlign: 'center',
+                backgroundColor: 'rgba(0,0,0,0)',
+              }}>
+                  你的名字是{user_data}!?
+              </Text>
+            </View>
+
+            <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+              <Text style={styles.buttonText}>
+                跟朋友聊天囉
+              </Text>
+            </TouchableOpacity>
+          </Image>
+        </View>
+      );
+    }
   }
 }
+
 /*聊天頁面*/
 class Botomo extends React.Component {
   constructor(props) {
@@ -107,6 +227,11 @@ class Botomo extends React.Component {
       isLoadingEarlier: false,
       initialPosition: '',
       lastPosition: '',
+      response:'',
+      userdataUpdate: false,
+      cacheTimeS:'',
+      cacheLocation:'',
+      cacheAT:'',
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -116,7 +241,6 @@ class Botomo extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
     this.renderMessageText = this.renderMessageText.bind(this);
     this.renderMessage = this.renderMessage.bind(this);
-    //this.onLoadEarlier = this.onLoadEarlier.bind(this)
     this._isAlright = null;
   }
 /*拿手機ID*/
@@ -149,20 +273,13 @@ class Botomo extends React.Component {
     this._isMounted = true;
     this.setState(() => {
       return {
-        messages: require('./data/messages.js'),
+        messages: require('./data/messages.js').initial_message,
       };
     });
   }
   componentWillUnmount() {
     this._isMounted = false;
   }
-  // onLoadEarlier() {
-  //   this.setState((previousState) => {
-  //     return {
-  //       isLoadingEarlier: true,
-  //     };
-  //   });
-  // }
 /*查詢送入後端*/
   onSend(messages = []) {
     this.setState((previousState) => {
@@ -200,7 +317,7 @@ class Botomo extends React.Component {
           user: {
             _id: 2,
             name: 'React Native',
-            //avatar: 'http://www.freeiconspng.com/uploads/brown-white-cat-png-4.png',
+            avatar: avatar,
           },         
         }),
       };
@@ -237,62 +354,101 @@ class Botomo extends React.Component {
   //     );
   //   }
   // }
-/*要回傳的東西*/
+
+  /*要回傳的東西*/
   getEvent(message) {
-    var gpscut = JSON.parse(this.state.lastPosition);
-    fetch("http://botomo.kyotw.me:20201/bot_response/", {
-      method: "POST",
-      body: JSON.stringify({
-        id: message,
-        lng: gpscut.coords.longitude,
-        lat: gpscut.coords.latitude
-        //createdAt: new Date(),
+    var deviceID=this.getUniqueID();
+    /* userdataUpdate */
+    if (this.userdataUpdate){
+      fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
+        method: "POST",
+        body: JSON.stringify({
+          
+            id:deviceID,
+            SearchTime:this.cacheTimeS,
+            SearchLoc:this.cacheLocation,
+            SearchTemp:this.cacheAT,
+            Msg:message
+         
+        })
       })
-    })
-    // fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       id: message
-    //       //createdAt: new Date(),
-    //     })
-    //   })
-    .then((res) => res.text())
-    .then((responseData) => {
-      // 接到 Data
-      // Alert.alert(user_data);
-      // Alert.alert(
-      //       '你覺得這樣的天氣如何',
-      //       null,
-      //       [
-      //         {text: '太熱了', onPress: () => console.log('Too Hot Pressed!')},
-      //         {text: '滿舒服的', onPress: () => console.log('Comfortable Pressed!')},
-      //         {text: '太冷了', onPress: () => console.log('Too Cold Pressed!')},
-      //       ]
-      //);
-      var cut = JSON.parse(responseData);
-      
-      this.onReceive(responseData);
-      this.onReceive("Request = "+cut.request);
-      this.onReceive("Intent = "+cut.intent);
-      this.onReceive("Location = "+cut.location);
-      this.onReceive("WindDir = "+cut.WindDir);
-      this.onReceive("Temp = "+cut.Temp);
-      this.onReceive("--DeviceInfo--");
-      this.onReceive("GeoLocation = "+this.state.lastPosition);
-      this.onReceive("longitude = "+gpscut.coords.longitude);
-      this.onReceive("latitude = "+gpscut.coords.latitude);
-      this.onReceive("UniqueID = "+this.getUniqueID());
-      this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-      //this.onReceive(cut.location+" "+this.weather_response.normal_response1);
-      
-      
-      this.setState((previousState) => {
-          return {
-           typingText: null,
-          };
-      });
-    })
-    .done();
+      .then((res) => res.text())
+      .then((responseData) => {
+        this.onReceive(responseData);
+        this.onReceive("Server got the response.");
+        // clean state
+        this.setState((previousState) => {
+            return {
+             typingText: null,
+            };
+        });
+        // next message redirect to weather
+        this.userdataUpdate=false;
+      })
+      .done();
+    }
+    /* toLUIS */
+    else {
+      var gpscut = JSON.parse(this.state.lastPosition);
+      fetch("http://botomo.kyotw.me:20201/bot_response/", {
+        method: "POST",
+        body: JSON.stringify({
+          id: message,
+          lng: gpscut.coords.longitude,
+          lat: gpscut.coords.latitude,
+          device: deviceID
+          //createdAt: new Date(),
+        })
+      })
+      .then((res) => res.text())
+      .then((responseData) => {
+        // 接到 Data
+        
+        var cut = JSON.parse(responseData);
+        
+        this.onReceive(responseData);
+        // this.onReceive("Request = "+cut.request);
+        // this.onReceive("Intent = "+cut.intent);
+        // this.onReceive("Location = "+cut.location);
+        // this.onReceive("WindDir = "+cut.WindDir);
+        // this.onReceive("Temp = "+cut.T);
+        // this.onReceive("--DeviceInfo--");
+        // this.onReceive("GeoLocation = "+this.state.lastPosition);
+        // this.onReceive("longitude = "+gpscut.coords.longitude);
+        // this.onReceive("latitude = "+gpscut.coords.latitude);
+        // this.onReceive("UniqueID = "+this.getUniqueID());
+        //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
+        //this.onReceive(this.button());
+        if (cut.intent!="Weather") this.onReceive(cut.response);
+        else{
+          if(cut.T!=null){
+            if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
+            else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+          }
+          if(cut.POP!=null){
+            this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
+            if(cut.POP>=70) this.onReceive(weather_response.response_rain);
+          }
+          if(cut.AT!=null){
+            temp=parseInt(cut.AT);
+            if(temp>=28) this.onReceive(weather_response.reponse_hot);
+            else if(temp<=21) this.onReceive(weather_response.reponse_cold);
+            else this.onReceive(weather_response.response_fine);
+          }
+          this.cacheTimeS=cut.TimeS;
+          this.cacheLocation=cut.location;
+          this.cacheAT=cut.AT;
+        }
+        this.setState((previousState) => {
+            return {
+             typingText: null,
+            };
+        });
+        // next message redirect to userdata
+        this.userdataUpdate=true;
+      })
+      .done();
+    }
   }
 /*染色的東西*/
   renderBubble(props) {

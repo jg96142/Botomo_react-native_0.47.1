@@ -25,9 +25,11 @@ import CustomView from './CustomView';
 import Moment from 'moment';
 import DeviceInfo from 'react-native-device-info';
 import {StackNavigator} from 'react-navigation';
+
 var RNDeviceInfo = require('react-native').NativeModules.RNDeviceInfo;
 var avatar=require('./data/messages.js').avatar;
 var property=require('./data/messages.js').property;
+
 /*使用者名字和回覆用語*/
 var user_data = '';
 let weather_response ='';
@@ -123,7 +125,7 @@ class Home extends React.Component {
   static navigationOptions = {
     title: 'BOTOMO是你唯一的朋友',
   };
-/*名字在資料庫*/
+  /*名字在資料庫*/
   componentDidMount = () =>AsyncStorage.getItem('name').then((value) =>this.setState({ 'name': value }))
   set_name = (value) =>{
     AsyncStorage.setItem('name', value);
@@ -132,32 +134,88 @@ class Home extends React.Component {
   render() { 
     user_data=this.state.name;
     const { navigate } = this.props.navigation;
-    return (
-      <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
-        <Text style={{flex:1}}></Text>
-        <WithLabel label="所以...">
-          <TextInput
-            style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
-            onChangeText={this.set_name}
-            placeholder={this.state.holder}
-            // onEndEditing={()=>editable={false}}
-            //editable={false}
-            //onSubmitEditing={console.log(this.state.name)}
-          />
-        </WithLabel>
-        <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
-            你的名字是{user_data}!?
-        </Text>
-
-        <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
-          <Text style={styles.buttonText}>
-            跟朋友聊天囉
+    if (Platform.OS=='android'){
+      return (
+        <Image source={require('./background.png')} style={{width:null, height:null, flex:1}}>
+          <Text style={{flex:1}}></Text>
+          <WithLabel label="所以...">
+            <TextInput
+              style={{height: 40, marginBottom: 15, marginTop: 15, width:230}}
+              onChangeText={this.set_name}
+              placeholder={this.state.holder}
+              // onEndEditing={()=>editable={false}}
+              //editable={false}
+              //onSubmitEditing={console.log(this.state.name)}
+            />
+          </WithLabel>
+          <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
+              你的名字是{user_data}!?
           </Text>
-        </TouchableOpacity>
-      </Image>
-    );
+
+          <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+            <Text style={styles.buttonText}>
+              跟朋友聊天囉
+            </Text>
+          </TouchableOpacity>
+        </Image>
+      );
+    }
+    else {
+      return (
+        <View style={{ flex: 1 }}>
+
+          <Image
+            source={require('./background.png')}  
+            style={{ 
+              //backgroundColor: '#ccc',
+              flex: 1,
+              resizeMode:'stretch',
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+            }}
+          >   
+            <View style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+              <WithLabel label="所以..." >
+                <TextInput
+                  style={{
+                    height: 40, 
+                    marginBottom: 15, 
+                    marginTop: 15, 
+                    width:230,
+                    backgroundColor: 'rgba(0,0,0,0)',
+                  }}
+                  onChangeText={this.set_name}
+                  placeholder={this.state.holder}
+                  // onEndEditing={()=>editable={false}}
+                  //editable={false}
+                  //onSubmitEditing={console.log(this.state.name)}
+                />
+              </WithLabel>
+              <Text style={{
+                color: '#228b22', 
+                fontSize: 25, 
+                marginBottom: 15, 
+                textAlign: 'center',
+                backgroundColor: 'rgba(0,0,0,0)',
+              }}>
+                  你的名字是{user_data}!?
+              </Text>
+            </View>
+
+            <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
+              <Text style={styles.buttonText}>
+                跟朋友聊天囉
+              </Text>
+            </TouchableOpacity>
+          </Image>
+        </View>
+      );
+    }
   }
 }
+
 /*聊天頁面*/
 class Botomo extends React.Component {
   constructor(props) {
@@ -170,6 +228,10 @@ class Botomo extends React.Component {
       initialPosition: '',
       lastPosition: '',
       response:'',
+      userdataUpdate: false,
+      cacheTimeS:'',
+      cacheLocation:'',
+      cacheAT:'',
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -205,6 +267,7 @@ class Botomo extends React.Component {
       this.setState({lastPosition});
     });
   }
+
   componentWillMount() {
     navigator.geolocation.clearWatch(this.watchID);
     this._isMounted = true;
@@ -280,82 +343,114 @@ class Botomo extends React.Component {
   }
 /*嘗試中的按鈕*/
   // button(){
-  //   //render(){
+  //   render(){
   //     return (
-        
-
-  //          <TouchableOpacity >
-  //            <Text >
-  //              跟朋友聊天囉
-  //            </Text>
-  //          </TouchableOpacity>
-        
+  //       <View>
+  //         <Button
+  //           onPress={()=> console.log("press")}
+  //           title="Press Me"
+  //         />
+  //     </View>
   //     );
-  //   //}
+  //   }
   // }
-/*要回傳的東西*/
+
+  /*要回傳的東西*/
   getEvent(message) {
-    var gpscut = JSON.parse(this.state.lastPosition);
-    fetch("http://botomo.kyotw.me:20201/bot_response/", {
-      method: "POST",
-      body: JSON.stringify({
-        id: message,
-        lng: gpscut.coords.longitude,
-        lat: gpscut.coords.latitude,
-        device: this.getUniqueID()
-        //createdAt: new Date(),
+    var deviceID=this.getUniqueID();
+    /* userdataUpdate */
+    if (this.userdataUpdate){
+      fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
+        method: "POST",
+        body: JSON.stringify({
+          
+            id:deviceID,
+            SearchTime:this.cacheTimeS,
+            SearchLoc:this.cacheLocation,
+            SearchTemp:this.cacheAT,
+            Msg:message
+         
+        })
       })
-    })
-    // fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       id: message
-    //       //createdAt: new Date(),
-    //     })
-    //   })
-    .then((res) => res.text())
-    .then((responseData) => {
-      // 接到 Data
-      var cut = JSON.parse(responseData);
-      
-      //this.onReceive(responseData);
-      // this.onReceive("Request = "+cut.request);
-      // this.onReceive("Intent = "+cut.intent);
-      // this.onReceive("Location = "+cut.location);
-      // this.onReceive("WindDir = "+cut.WindDir);
-      // this.onReceive("Temp = "+cut.T);
-      // this.onReceive("--DeviceInfo--");
-      // this.onReceive("GeoLocation = "+this.state.lastPosition);
-      // this.onReceive("longitude = "+gpscut.coords.longitude);
-      // this.onReceive("latitude = "+gpscut.coords.latitude);
-      // this.onReceive("UniqueID = "+this.getUniqueID());
-      //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-      //this.onReceive(this.button());
-      if (cut.intent!="Weather") this.onReceive(cut.response);
-      else{
-        if(cut.T!=null){
-          if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
-          else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+
+    
+      .then((res) => res.text())
+      .then((responseData) => {
+        this.onReceive(responseData);
+        this.onReceive("Server got the response.");
+        // clean state
+        this.setState((previousState) => {
+            return {
+             typingText: null,
+            };
+        });
+        // next message redirect to weather
+        this.userdataUpdate=false;
+      })
+      .done();
+    }
+    /* toLUIS */
+    else {
+      var gpscut = JSON.parse(this.state.lastPosition);
+      fetch("http://botomo.kyotw.me:20201/bot_response/", {
+        method: "POST",
+        body: JSON.stringify({
+          id: message,
+          lng: gpscut.coords.longitude,
+          lat: gpscut.coords.latitude,
+          device: deviceID
+          //createdAt: new Date(),
+        })
+      })
+      .then((res) => res.text())
+      .then((responseData) => {
+        // 接到 Data
+        
+        var cut = JSON.parse(responseData);
+        
+        this.onReceive(responseData);
+        // this.onReceive("Request = "+cut.request);
+        // this.onReceive("Intent = "+cut.intent);
+        // this.onReceive("Location = "+cut.location);
+        // this.onReceive("WindDir = "+cut.WindDir);
+        // this.onReceive("Temp = "+cut.T);
+        // this.onReceive("--DeviceInfo--");
+        // this.onReceive("GeoLocation = "+this.state.lastPosition);
+        // this.onReceive("longitude = "+gpscut.coords.longitude);
+        // this.onReceive("latitude = "+gpscut.coords.latitude);
+        // this.onReceive("UniqueID = "+this.getUniqueID());
+        //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
+        //this.onReceive(this.button());
+        if (cut.intent!="Weather") this.onReceive(cut.response);
+        else{
+          if(cut.T!=null){
+            if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
+            else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
+          }
+          if(cut.POP!=null){
+            this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
+            if(cut.POP>=70) this.onReceive(weather_response.response_rain);
+          }
+          if(cut.AT!=null){
+            temp=parseInt(cut.AT);
+            if(temp>=28) this.onReceive(weather_response.reponse_hot);
+            else if(temp<=21) this.onReceive(weather_response.reponse_cold);
+            else this.onReceive(weather_response.response_fine);
+          }
+          this.cacheTimeS=cut.TimeS;
+          this.cacheLocation=cut.location;
+          this.cacheAT=cut.AT;
         }
-        if(cut.POP!=null){
-          this.onReceive(weather_response.response_pop+cut.POP+weather_response.response_pop2);
-          if(cut.POP>=70) this.onReceive(weather_response.response_rain);
-        }
-        if(cut.AT!=null){
-          temp=parseInt(cut.AT);
-          alert(temp);
-          if(temp>=28) this.onReceive(weather_response.response_hot);
-          else if(temp<=21) this.onReceive(weather_response.response_cold);
-          else this.onReceive(weather_response.response_fine);
-        }
-      }
-      this.setState((previousState) => {
-          return {
-           typingText: null,
-          };
-      });
-    })
-    .done();
+        this.setState((previousState) => {
+            return {
+             typingText: null,
+            };
+        });
+        // next message redirect to userdata
+        this.userdataUpdate=true;
+      })
+      .done();
+    }
   }
 /*染色的東西*/
   renderBubble(props) {
