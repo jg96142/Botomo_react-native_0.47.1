@@ -318,7 +318,7 @@ class Botomo extends React.Component {
       // 接到 Data
       var cut = JSON.parse(responseData);
       
-      this.onReceive(responseData);
+      //this.onReceive(responseData);
       // this.onReceive("Request = "+cut.request);
       // this.onReceive("Intent = "+cut.intent);
       // this.onReceive("Location = "+cut.location);
@@ -343,8 +343,9 @@ class Botomo extends React.Component {
         }
         if(cut.AT!=null){
           temp=parseInt(cut.AT);
-          if(temp>=28) this.onReceive(weather_response.reponse_hot);
-          else if(temp<=21) this.onReceive(weather_response.reponse_cold);
+          alert(temp);
+          if(temp>=28) this.onReceive(weather_response.response_hot);
+          else if(temp<=21) this.onReceive(weather_response.response_cold);
           else this.onReceive(weather_response.response_fine);
         }
       }
