@@ -167,7 +167,7 @@ class Botomo extends React.Component {
       cacheLocation:'',
       cacheAT:'',
       setlng:121.4316119,
-      setlan:25.0353401
+      setlan:25.0353401,
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -334,14 +334,13 @@ class Botomo extends React.Component {
 /*旁邊的加號*/
   renderCustomActions(props) {
     const options = {
-     '切換邊緣開者的發言': (props) => {
+     '切換邊緣開發者的發言': (props) => {
         this.state.userdataUpdate_on=!this.state.userdataUpdate_on;
-        //alert(this.state.userdataUpdate_on);
       },
       '隨機屬性切換': (props) => {
         property=Math.floor((Math.random() * 5) + 1);
       },
-      'Cancel': () => {},
+      '返回': () => {},
     };
     return (
       <Actions
@@ -418,12 +417,14 @@ class Botomo extends React.Component {
       .then((responseData) => {
         // 接到 Data
         var cut = JSON.parse(responseData);
+        var place;
+        if(cut.landmark!=null) place=cut.landmark;
+        else place=cut.location;
         this.onReceive(responseData);
-        alert(property);
         if (cut.intent!="Weather") this.onReceive(cut.response);
         else{
           if(cut.T!=null){
-            if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
+            if(property<=2) this.onReceive(place+weather_response.response_temp+cut.T+weather_response.response_temp2);
             else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
           }
           if(cut.POP!=null){
