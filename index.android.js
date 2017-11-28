@@ -401,8 +401,6 @@ class Botomo extends React.Component {
     }
     /* toLUIS */
     else {
-      //alert(this.state.setlng);
-      //alert(this.userdataUpdate_on);
       var gpscut = JSON.parse(this.state.lastPosition);
       if(gpscut.coords.longitude!=null) this.state.setlng=gpscut.coords.longitude;
       if(gpscut.coords.latitude!=null) this.state.setlan=gpscut.coords.latitude;
@@ -419,22 +417,8 @@ class Botomo extends React.Component {
       .then((res) => res.text())
       .then((responseData) => {
         // 接到 Data
-        
         var cut = JSON.parse(responseData);
-        
         this.onReceive(responseData);
-        // this.onReceive("Request = "+cut.request);
-        // this.onReceive("Intent = "+cut.intent);
-        // this.onReceive("Location = "+cut.location);
-        // this.onReceive("WindDir = "+cut.WindDir);
-        // this.onReceive("Temp = "+cut.T);
-        // this.onReceive("--DeviceInfo--");
-        // this.onReceive("GeoLocation = "+this.state.lastPosition);
-        // this.onReceive("longitude = "+gpscut.coords.longitude);
-        // this.onReceive("latitude = "+gpscut.coords.latitude);
-        // this.onReceive("UniqueID = "+this.getUniqueID());
-        //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-        //this.onReceive(this.button());
         alert(property);
         if (cut.intent!="Weather") this.onReceive(cut.response);
         else{
@@ -452,15 +436,11 @@ class Botomo extends React.Component {
             else if(temp<=21) this.onReceive(weather_response.response_cold);
             else this.onReceive(weather_response.response_fine);
           }
-          if(cut.Wind!=null){
-            
-          }
           if(this.state.userdataUpdate_on&&cut.Now==1)
             this.onReceive("邊緣的開發者發言中...這樣的天氣很熱?很冷?還是很舒適?若不想回答，請按左下角的加號切換");
           this.state.cacheTimeS=cut.TimeS;
           this.state.cacheLocation=cut.location;
           this.state.cacheAT=cut.AT;
-
           if(cut.Now==1)this.state.userdataUpdate=true;
         }
         this.setState((previousState) => {
@@ -468,8 +448,6 @@ class Botomo extends React.Component {
              typingText: null,
             };
         });
-        // next message redirect to userdata
-        
       })
       .done();
     }
