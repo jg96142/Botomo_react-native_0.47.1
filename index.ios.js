@@ -160,6 +160,7 @@ class Home extends React.Component {
         </Image>
       );
     }
+    // for iOS
     else {
       return (
         <View style={{ flex: 1 }}>
@@ -225,7 +226,7 @@ class Botomo extends React.Component {
       //loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
-      initialPosition: '',
+      //initialPosition: '',
       lastPosition: '',
       response:'',
       userdataUpdate: false,
@@ -254,17 +255,16 @@ class Botomo extends React.Component {
   // };
   watchID: ?number = null;
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var initialPosition = JSON.stringify(position);
-        this.setState({initialPosition});
-      },
-      (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    );
+    // navigator.geolocation.getCurrentPosition(
+    //   (position) => {
+    //     var initialPosition = JSON.stringify(position);
+    //     this.setState({initialPosition});
+    //   },
+    //   (error) => alert(JSON.stringify(error)),
+    //   {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    // );
     this.watchID = navigator.geolocation.watchPosition((position) => {
-      var lastPosition = JSON.stringify(position);
-      this.setState({lastPosition});
+      this.state.lastPosition = JSON.stringify(position);
     });
   }
 
