@@ -33,73 +33,6 @@ var property=require('./data/messages.js').property;
 /*使用者名字和回覆用語*/
 var user_data = '';
 let weather_response ='';
-switch(property){
-  case 1: weather_response = {
-            response_CI: '今天天氣',
-            response_CI2: '明天天氣',
-            response_temp: '的氣溫是',
-            response_temp2: '度喔',
-            response_pop: '降雨機率是',
-            response_pop2: '%喔',
-            response_hot: '太陽有點大呢',
-            response_cold: '要帶件外套保暖',
-            response_fine: '兔兔想要出去玩',
-            response_rain: '一直下雨..兔兔覺得難過',
-          };
-          break;
-  case 2:  weather_response = {
-            response_CI: '今天天氣',
-            response_CI2: '明天天氣',
-            response_temp: '的溫度是',
-            response_temp2: '度，真想睡覺阿',
-            response_pop: '降雨機率是',
-            response_pop2: '%，好想睡覺阿',
-            response_hot: '挖，在家曬太陽真好睡阿',
-            response_cold: '窩在被窩真好睡阿',
-            response_fine: '(打哈欠)',
-            response_rain: '下雨就在家睡覺吧',
-          };
-          break;
-  case 3: weather_response = {
-            response_CI: '今天天氣',
-            response_CI2: '明天天氣',
-            response_temp: '是的主人，馬上幫你查詢。該區溫度是',
-            response_temp2: '度',
-            response_pop: '降雨機率為',
-            response_pop2: '%',
-            response_hot: '主人要記得避開太陽',
-            response_cold: '主人，讓兔兔幫您穿外套',
-            response_fine: '請問主人，兔兔可以陪您出門嗎?',
-            response_rain: '主人，這把傘請您帶出門。',
-          };
-          break;
-  case 4: weather_response = {
-            response_CI: '今天天氣',
-            response_CI2: '明天天氣',
-            response_temp: '我..我才不會告訴你那裡',
-            response_temp2: '度的',
-            response_pop: '我也不會告訴你降雨機率是',
-            response_pop2: '%的..哼',
-            response_hot: '你如果曬傷了..我才不會關心你勒..',
-            response_cold: '你不穿外套嗎?我..我這才不是在意你',
-            response_fine: '你不能帶我出門嗎?我才不是想跟你出門，我只是想自己去吃蛋糕啦',
-            response_rain: '如果你淋濕回來感冒，我不管你喔',
-          };
-          break;
-  case 5: weather_response = {
-            response_CI: '今天天氣',
-            response_CI2: '明天天氣',
-            response_temp: '自己不會去查，還要我跟你說',
-            response_temp2: '度',
-            response_pop: '還要我說降雨機率是',
-            response_pop2: '%阿?',
-            response_hot: '如果曬傷了要你好看',
-            response_cold: '如果感冒了，你就不用回來了',
-            response_fine: '跪下道歉阿',
-            response_rain: '淋濕你就完蛋了',
-          };
-          break;
-}
 
 class WithLabel extends React.Component {
   render() {
@@ -151,7 +84,6 @@ class Home extends React.Component {
           <Text style={{color: '#228b22', fontSize: 25, marginBottom: 15, textAlign: 'center'}}>
               你的名字是{user_data}!?
           </Text>
-
           <TouchableOpacity onPress={() => navigate('Botomo')} style={styles.button}>
             <Text style={styles.buttonText}>
               跟朋友聊天囉
@@ -218,6 +150,7 @@ class Home extends React.Component {
 
 /*聊天頁面*/
 class Botomo extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -229,9 +162,12 @@ class Botomo extends React.Component {
       lastPosition: '',
       response:'',
       userdataUpdate: false,
+      userdataUpdate_on: true,
       cacheTimeS:'',
       cacheLocation:'',
       cacheAT:'',
+      setlng:121.4316119,
+      setlan:25.0353401,
     };
     this._isMounted = false;
     this.onSend = this.onSend.bind(this);
@@ -259,7 +195,7 @@ class Botomo extends React.Component {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
       },
-      (error) => alert(JSON.stringify(error)),
+      (error) => console.log(JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
@@ -307,7 +243,79 @@ class Botomo extends React.Component {
     }, 1000);
   }
 /*收到的回覆*/
-  onReceive(text) {   
+  onReceive(text) {
+  switch(property){
+    case 1: weather_response = {
+              response_CI: '今天天氣',
+              response_CI2: '明天天氣',
+              response_temp: '的氣溫是',
+              response_temp2: '度喔',
+              response_pop: '降雨機率是',
+              response_pop2: '%喔',
+              response_hot: '太陽有點大呢',
+              response_cold: '要帶件外套保暖',
+              response_fine: '兔兔想要出去玩',
+              response_rain: '一直下雨..兔兔覺得難過',
+              avatar: "https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
+            };
+            break;
+    case 2:  weather_response = {
+              response_CI: '今天天氣',
+              response_CI2: '明天天氣',
+              response_temp: '的溫度是',
+              response_temp2: '度，真想睡覺阿',
+              response_pop: '降雨機率是',
+              response_pop2: '%，好想睡覺阿',
+              response_hot: '挖，在家曬太陽真好睡阿',
+              response_cold: '窩在被窩真好睡阿',
+              response_fine: '(打哈欠)',
+              response_rain: '下雨就在家睡覺吧',
+              avatar: "http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
+            };
+            break;
+    case 3: weather_response = {
+              response_CI: '今天天氣',
+              response_CI2: '明天天氣',
+              response_temp: '是的主人，馬上幫你查詢。該區溫度是',
+              response_temp2: '度',
+              response_pop: '降雨機率為',
+              response_pop2: '%',
+              response_hot: '主人要記得避開太陽',
+              response_cold: '主人，讓兔兔幫您穿外套',
+              response_fine: '請問主人，兔兔可以陪您出門嗎?',
+              response_rain: '主人，這把傘請您帶出門。',
+              avatar:"http://i.osimg.com/vi/nTLIUBdJZ9.jpg"
+            };
+            break;
+    case 4: weather_response = {
+              response_CI: '今天天氣',
+              response_CI2: '明天天氣',
+              response_temp: '我..我才不會告訴你那裡',
+              response_temp2: '度的',
+              response_pop: '我也不會告訴你降雨機率是',
+              response_pop2: '%的..哼',
+              response_hot: '你如果曬傷了..我才不會關心你勒..',
+              response_cold: '你不穿外套嗎?我..我這才不是在意你',
+              response_fine: '你不能帶我出門嗎?我才不是想跟你出門，我只是想自己去吃蛋糕啦',
+              response_rain: '如果你淋濕回來感冒，我不管你喔',
+              avatar:"https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
+            };
+            break;
+    case 5: weather_response = {
+              response_CI: '今天天氣',
+              response_CI2: '明天天氣',
+              response_temp: '自己不會去查，還要我跟你說',
+              response_temp2: '度',
+              response_pop: '降雨機率是',
+              response_pop2: '%，87阿',
+              response_hot: '如果曬傷了要你好看',
+              response_cold: '如果感冒了，你就不用回來了',
+              response_fine: '跪下道歉阿',
+              response_rain: '淋濕你就完蛋了',
+              avatar:"http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
+            };
+            break;
+  }   
     this.setState((previousState) => {
       return {
         messages: GiftedChat.append(previousState.messages, {
@@ -317,7 +325,7 @@ class Botomo extends React.Component {
           user: {
             _id: 2,
             name: 'React Native',
-            avatar: avatar,
+            avatar: weather_response.avatar,
           },         
         }),
       };
@@ -326,13 +334,13 @@ class Botomo extends React.Component {
 /*旁邊的加號*/
   renderCustomActions(props) {
     const options = {
-      'Action 1': (props) => {
-        alert(user_data);
+     '切換邊緣開發者的發言': (props) => {
+        this.state.userdataUpdate_on=!this.state.userdataUpdate_on;
       },
-      'Action 2': (props) => {
-        alert('option 2');
+      '隨機屬性切換': (props) => {
+        property=Math.floor((Math.random() * 5) + 1);
       },
-      'Cancel': () => {},
+      '返回': () => {},
     };
     return (
       <Actions
@@ -359,43 +367,48 @@ class Botomo extends React.Component {
   getEvent(message) {
     var deviceID=this.getUniqueID();
     /* userdataUpdate */
-    if (this.userdataUpdate){
+    if (this.state.userdataUpdate&&this.state.userdataUpdate_on){
       fetch("http://botomo.kyotw.me:20201/userdata/apps/", {
         method: "POST",
         body: JSON.stringify({
-          
             id:deviceID,
-            SearchTime:this.cacheTimeS,
-            SearchLoc:this.cacheLocation,
-            SearchTemp:this.cacheAT,
+            SearchTime:this.state.cacheTimeS,
+            SearchLoc:this.state.cacheLocation,
+            SearchTemp:this.state.cacheAT,
             Msg:message
-         
         })
       })
       .then((res) => res.text())
       .then((responseData) => {
         this.onReceive(responseData);
-        this.onReceive("Server got the response.");
+        this.onReceive("邊緣的開發者收到回應");
         // clean state
         this.setState((previousState) => {
             return {
              typingText: null,
+              user: {
+                _id: 2,
+                name: 'React Native',
+                avatar: weather_response.avatar,
+              }, 
             };
         });
         // next message redirect to weather
-        this.userdataUpdate=false;
+        this.state.userdataUpdate=false;
       })
       .done();
     }
     /* toLUIS */
     else {
       var gpscut = JSON.parse(this.state.lastPosition);
+      if(gpscut.coords.longitude!=null) this.state.setlng=gpscut.coords.longitude;
+      if(gpscut.coords.latitude!=null) this.state.setlan=gpscut.coords.latitude;
       fetch("http://botomo.kyotw.me:20201/bot_response/", {
         method: "POST",
         body: JSON.stringify({
           id: message,
-          lng: gpscut.coords.longitude,
-          lat: gpscut.coords.latitude,
+          lng: this.state.setlng,
+          lat: this.state.setlan,
           device: deviceID
           //createdAt: new Date(),
         })
@@ -403,26 +416,15 @@ class Botomo extends React.Component {
       .then((res) => res.text())
       .then((responseData) => {
         // 接到 Data
-        
         var cut = JSON.parse(responseData);
-        
+        var place;
+        if(cut.landmark!=null) place=cut.landmark;
+        else place=cut.location;
         this.onReceive(responseData);
-        // this.onReceive("Request = "+cut.request);
-        // this.onReceive("Intent = "+cut.intent);
-        // this.onReceive("Location = "+cut.location);
-        // this.onReceive("WindDir = "+cut.WindDir);
-        // this.onReceive("Temp = "+cut.T);
-        // this.onReceive("--DeviceInfo--");
-        // this.onReceive("GeoLocation = "+this.state.lastPosition);
-        // this.onReceive("longitude = "+gpscut.coords.longitude);
-        // this.onReceive("latitude = "+gpscut.coords.latitude);
-        // this.onReceive("UniqueID = "+this.getUniqueID());
-        //this.onReceive("你覺得這樣的天氣很熱?很冷?還是很舒適?");
-        //this.onReceive(this.button());
         if (cut.intent!="Weather") this.onReceive(cut.response);
         else{
           if(cut.T!=null){
-            if(property<=2) this.onReceive(cut.location+weather_response.response_temp+cut.T+weather_response.response_temp2);
+            if(property<=2) this.onReceive(place+weather_response.response_temp+cut.T+weather_response.response_temp2);
             else this.onReceive(weather_response.response_temp+cut.T+weather_response.response_temp2);
           }
           if(cut.POP!=null){
@@ -431,21 +433,22 @@ class Botomo extends React.Component {
           }
           if(cut.AT!=null){
             temp=parseInt(cut.AT);
-            if(temp>=28) this.onReceive(weather_response.reponse_hot);
-            else if(temp<=21) this.onReceive(weather_response.reponse_cold);
+            if(temp>=28) this.onReceive(weather_response.response_hot);
+            else if(temp<=21) this.onReceive(weather_response.response_cold);
             else this.onReceive(weather_response.response_fine);
           }
-          this.cacheTimeS=cut.TimeS;
-          this.cacheLocation=cut.location;
-          this.cacheAT=cut.AT;
+          if(this.state.userdataUpdate_on&&cut.Now==1)
+            this.onReceive("邊緣的開發者發言中...這樣的天氣很熱?很冷?還是很舒適?若不想回答，請按左下角的加號切換");
+          this.state.cacheTimeS=cut.TimeS;
+          this.state.cacheLocation=cut.location;
+          this.state.cacheAT=cut.AT;
+          if(cut.Now==1)this.state.userdataUpdate=true;
         }
         this.setState((previousState) => {
             return {
              typingText: null,
             };
         });
-        // next message redirect to userdata
-        this.userdataUpdate=true;
       })
       .done();
     }
