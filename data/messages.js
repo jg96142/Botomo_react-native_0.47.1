@@ -47,7 +47,7 @@ module.exports = {
     {
       _id: Math.round(Math.random() * 1000000),
       text: this.state.user_response,
-      createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+      createdAt: new Date(),
       user: {
         _id: 1,
         name: 'Developer',
@@ -62,7 +62,7 @@ module.exports = {
     {
       _id: Math.round(Math.random() * 1000000),
       text: this.state.greeting_text,
-      createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+      createdAt: new Date(),
       user: {
         _id: 2,
         name: 'Botomo',
