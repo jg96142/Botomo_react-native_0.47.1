@@ -223,27 +223,6 @@ class Botomo extends React.Component {
         messages: GiftedChat.append(previousState.messages, messages),
       };
     });
-    // for demo purpose
-    this.answerBotomo(messages[0].text)
-    // this.answerDemo(messages);
-  }
-/*正在輸入*/
-  answerBotomo(messages) {
-    if (messages.length > 0) {
-      if ((messages[0].image || messages[0].location) || !this._isAlright) {
-        this.setState((previousState) => {
-          return {
-            typingText: 'Botomo is typing'
-          };
-        });
-      }
-    }
-    setTimeout(() => {
-      this.getEvent(messages)
-    }, 1000);
-  }
-/*收到的回覆*/
-  onReceive(text) { 
     switch(property){
       case 1: weather_response = {
                 response_CI: '今天天氣',
@@ -315,7 +294,29 @@ class Botomo extends React.Component {
                 avatar:"http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
               };
               break;
-    }     
+    }
+    // for demo purpose
+    this.answerBotomo(messages[0].text)
+    // this.answerDemo(messages);
+  }
+/*正在輸入*/
+  answerBotomo(messages) {
+    if (messages.length > 0) {
+      if ((messages[0].image || messages[0].location) || !this._isAlright) {
+        this.setState((previousState) => {
+          return {
+            typingText: 'Botomo is typing'
+          };
+        });
+      }
+    }
+    setTimeout(() => {
+      this.getEvent(messages)
+    }, 1000);
+  }
+/*收到的回覆*/
+  onReceive(text) { 
+         
     this.setState((previousState) => {
       return {
         messages: GiftedChat.append(previousState.messages, {
@@ -325,7 +326,7 @@ class Botomo extends React.Component {
           user: {
             _id: 2,
             name: 'React Native',
-            avatar: avatar,
+            avatar: weather_response.avatar,
           },         
         }),
       };
@@ -333,12 +334,17 @@ class Botomo extends React.Component {
   }
 /*旁邊的加號*/
   renderCustomActions(props) {
+    var on=true;
     const options = {
      '切換邊緣開發者的發言': (props) => {
         this.state.userdataUpdate_on=!this.state.userdataUpdate_on;
+        on=!on;
+        if(on) alert("已開啟邊緣開發者發言");
+        else alert("已關閉邊緣開發者發言");
       },
-      '隨機屬性切換': (props) => {
+      '角色隨機切換': (props) => {
         property=Math.floor((Math.random() * 5) + 1);
+        alert("角色已隨機切換");
       },
       '返回': () => {},
     };
@@ -426,9 +432,10 @@ class Botomo extends React.Component {
         
         if (responseData==null)
           alert("responseData is null"); 
-        this.onReceive(responseData); 
- 
-        if (cut.intent!="Weather") this.onReceive(cut.response);
+        //this.onReceive(responseData); 
+        if (cut.intent=="None") this.onReceive("不懂你在說什麼");
+        else if (cut.intent=="Greetings") this.onReceive("嗨");
+        //else if (cut.intent!="Weather") this.onReceive(cut.response);
         else{
           if(cut.T!=null){
             if(property<=2) this.onReceive(place+weather_response.response_temp+cut.T+weather_response.response_temp2);
@@ -444,8 +451,10 @@ class Botomo extends React.Component {
             else if(temp<=21) this.onReceive(weather_response.response_cold);
             else this.onReceive(weather_response.response_fine);
           }
-          if(this.state.userdataUpdate_on&&cut.Now==1)
-            this.onReceive("邊緣的開發者發言中...這樣的天氣很熱?很冷?還是很舒適?若不想回答，請按左下角的加號切換");
+          if(this.state.userdataUpdate_on&&cut.Now==1){
+            this.onReceive("邊緣的開發者發言中...");
+            this.onReceive("這樣的天氣很熱?很冷?還是很舒服?若不想回答，請按左下角的加號切換");
+          }
           this.state.cacheTimeS=cut.TimeS;
           this.state.cacheLocation=cut.location;
           this.state.cacheAT=cut.AT;
