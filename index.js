@@ -199,13 +199,14 @@ class Botomo extends React.Component {
     //   (error) => alert(JSON.stringify(error)),
     //   {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     // );
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      this.state.lastPosition = JSON.stringify(position);
-    });
+    
   }
 
   componentWillMount() {
     navigator.geolocation.clearWatch(this.watchID);
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      this.state.lastPosition = JSON.stringify(position);
+    });
     this._isMounted = true;
     this.setState(() => {
       return {
@@ -408,9 +409,12 @@ class Botomo extends React.Component {
     }
     /* toLUIS */
     else {
-      var gpscut = JSON.parse(this.state.lastPosition);
-      if(gpscut.coords.longitude!=null) this.state.setlng=gpscut.coords.longitude;
-      if(gpscut.coords.latitude!=null) this.state.setlan=gpscut.coords.latitude;
+      console.log("Print lastPosition: "+this.state.lastPosition);
+      if(this.state.lastPosition!='') {
+        var gpscut = JSON.parse(this.state.lastPosition);
+        this.state.setlng=gpscut.coords.longitude;
+        this.state.setlan=gpscut.coords.latitude;
+      }
       fetch("http://botomo.kyotw.me:20201/bot_response/", {
         method: "POST",
         body: JSON.stringify({
