@@ -236,7 +236,7 @@ class Botomo extends React.Component {
                 response_cold: '要帶件外套保暖',
                 response_fine: '兔兔想要出去玩',
                 response_rain: '一直下雨..兔兔覺得難過',
-                avatar: "https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
+                avatar: './rabbit.png'//"https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
               };
               break;
       case 2:  weather_response = {
@@ -250,7 +250,7 @@ class Botomo extends React.Component {
                 response_cold: '窩在被窩真好睡阿',
                 response_fine: '(打哈欠)',
                 response_rain: '下雨就在家睡覺吧',
-                avatar: "http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
+                avatar: './cat.png'//"http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
               };
               break;
       case 3: weather_response = {
@@ -261,10 +261,10 @@ class Botomo extends React.Component {
                 response_pop: '降雨機率為',
                 response_pop2: '%',
                 response_hot: '主人要記得避開太陽',
-                response_cold: '主人，讓兔兔幫您穿外套',
-                response_fine: '請問主人，兔兔可以陪您出門嗎?',
+                response_cold: '主人，請讓我幫您穿上外套',
+                response_fine: '請問主人，可以陪您一同出門嗎?',
                 response_rain: '主人，這把傘請您帶出門。',
-                avatar:"http://i.osimg.com/vi/nTLIUBdJZ9.jpg"
+                avatar:'./vanilla.jpg'//"http://i.osimg.com/vi/nTLIUBdJZ9.jpg"
               };
               break;
       case 4: weather_response = {
@@ -278,7 +278,7 @@ class Botomo extends React.Component {
                 response_cold: '你不穿外套嗎?我..我這才不是在意你',
                 response_fine: '你不能帶我出門嗎?我才不是想跟你出門，我只是想自己去吃蛋糕啦',
                 response_rain: '如果你淋濕回來感冒，我不管你喔',
-                avatar:"https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
+                avatar:'./misaka.png'//"https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
               };
               break;
       case 5: weather_response = {
@@ -292,7 +292,7 @@ class Botomo extends React.Component {
                 response_cold: '如果感冒了，你就不用回來了',
                 response_fine: '跪下道歉阿',
                 response_rain: '淋濕你就完蛋了',
-                avatar:"http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
+                avatar:'./moika.png'//"http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
               };
               break;
     }
