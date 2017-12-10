@@ -228,7 +228,7 @@ class Botomo extends React.Component {
       case 1: weather_response = {
                 response_CI: '今天天氣',
                 response_CI2: '明天天氣',
-                response_temp: '的氣溫是',
+                response_temp: '的溫度是',
                 response_temp2: '度喔',
                 response_pop: '降雨機率是',
                 response_pop2: '%喔',
@@ -236,7 +236,7 @@ class Botomo extends React.Component {
                 response_cold: '要帶件外套保暖',
                 response_fine: '兔兔想要出去玩',
                 response_rain: '一直下雨..兔兔覺得難過',
-                avatar: './rabbit.png'//"https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
+                avatar: "https://rm-content.s3-accelerate.amazonaws.com/564a02c8e64b86a74eea9b2e/460941/upload-5b2745d0-6d93-11e7-9b68-d76d941e9686.png"
               };
               break;
       case 2:  weather_response = {
@@ -250,7 +250,7 @@ class Botomo extends React.Component {
                 response_cold: '窩在被窩真好睡阿',
                 response_fine: '(打哈欠)',
                 response_rain: '下雨就在家睡覺吧',
-                avatar: './cat.png'//"http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
+                avatar: "http://a17kennels.co.uk/wp-content/uploads/2013/01/success_cat-294x300.png"
               };
               break;
       case 3: weather_response = {
@@ -264,7 +264,7 @@ class Botomo extends React.Component {
                 response_cold: '主人，請讓我幫您穿上外套',
                 response_fine: '請問主人，可以陪您一同出門嗎?',
                 response_rain: '主人，這把傘請您帶出門。',
-                avatar:'./vanilla.jpg'//"http://i.osimg.com/vi/nTLIUBdJZ9.jpg"
+                avatar:"http://i.osimg.com/vi/nTLIUBdJZ9.jpg"
               };
               break;
       case 4: weather_response = {
@@ -278,7 +278,7 @@ class Botomo extends React.Component {
                 response_cold: '你不穿外套嗎?我..我這才不是在意你',
                 response_fine: '你不能帶我出門嗎?我才不是想跟你出門，我只是想自己去吃蛋糕啦',
                 response_rain: '如果你淋濕回來感冒，我不管你喔',
-                avatar:'./misaka.png'//"https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
+                avatar:"https://i.artfile.me/wallpaper/07-04-2017/360x225/anime-toaru-majutsu-no-index-devushka-vz-1149569.jpg"
               };
               break;
       case 5: weather_response = {
@@ -292,7 +292,7 @@ class Botomo extends React.Component {
                 response_cold: '如果感冒了，你就不用回來了',
                 response_fine: '跪下道歉阿',
                 response_rain: '淋濕你就完蛋了',
-                avatar:'./moika.png'//"http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
+                avatar:"http://livedoor.blogimg.jp/subroku18/imgs/5/d/5d4883bd.png"
               };
               break;
     }
@@ -389,7 +389,7 @@ class Botomo extends React.Component {
       })
       .then((res) => res.text())
       .then((responseData) => {
-        this.onReceive(responseData);
+        //this.onReceive(responseData);
         this.onReceive("邊緣的開發者收到回應");
         // clean state
         this.setState((previousState) => {
